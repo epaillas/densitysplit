@@ -1,0 +1,25 @@
+# Configuration file to run the density split
+# pipeline on a cosmological survey.
+
+handle: 'test'
+filter_radius: 30 
+use_weights: False
+tracers_filename: Patchy-Mocks-DR12NGC-COMPSAM_V6C_0001.dat 
+randoms_filename: Patchy-Mocks-Randoms-DR12NGC-COMPSAM_V6C_x10.dat
+ngrid: 200
+nthreads: 1
+quantiles: 5
+
+sampling_filename: Patchy-Mocks-Randoms-DR12NGC-COMPSAM_V6C_x10.dat
+seeds_method: 'subsampling'
+nseeds: 1000
+omega_m: 0.307
+convert_seeds: True
+convert_tracers: True
+seeds_xmin: 
+seeds_xmax:
+seeds_ymin:
+seeds_ymax:
+seeds_zmin:
+seeds_zmax:
+
