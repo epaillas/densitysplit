@@ -124,7 +124,6 @@ class DensitySplit:
 
             # convert tracer coordinates
             converted_file = f'{handle}_tracers_sky.dat'
-            self.params['tracers_filename'] = converted_file 
             if not path.isfile(converted_file):
                 tracers = np.genfromtxt(self.params['tracers_filename'])
                 ra = tracers[:, 0]
@@ -134,10 +133,10 @@ class DensitySplit:
                 comoving_tracers = sky_to_cartesian(sky_tracers, cosmo)
                 tracers[:, :3] = comoving_tracers
                 np.savetxt(self.params['tracers_filename'], tracers)
+            self.params['tracers_filename'] = converted_file 
 
             # convert random coordinates
             converted_file = f'{handle}_randoms_sky.dat'
-            self.params['randoms_filename'] = converted_file 
             if not path.isfile(converted_file):
                 randoms = np.genfromtxt(self.params['randoms_filename'])
                 ra = randoms[:, 0]
@@ -147,6 +146,7 @@ class DensitySplit:
                 comoving_randoms = sky_to_cartesian(sky_randoms, cosmo)
                 randoms[:, :3] = comoving_randoms
                 np.savetxt(self.params['randoms_filename'], randoms)
+            self.params['randoms_filename'] = converted_file 
 
         # figure out bounding box in comoving coordinates
 
