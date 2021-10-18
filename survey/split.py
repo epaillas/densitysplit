@@ -132,7 +132,7 @@ class DensitySplit:
                 sky_tracers = np.c_[ra, dec, z]
                 comoving_tracers = sky_to_cartesian(sky_tracers, cosmo)
                 tracers[:, :3] = comoving_tracers
-                np.savetxt(self.params['tracers_filename'], tracers)
+                np.savetxt(converted_file, tracers)
             self.params['tracers_filename'] = converted_file 
 
             # convert random coordinates
@@ -145,7 +145,7 @@ class DensitySplit:
                 sky_randoms = np.c_[ra, dec, z]
                 comoving_randoms = sky_to_cartesian(sky_randoms, cosmo)
                 randoms[:, :3] = comoving_randoms
-                np.savetxt(self.params['randoms_filename'], randoms)
+                np.savetxt(converted_file, randoms)
             self.params['randoms_filename'] = converted_file 
 
         # figure out bounding box in comoving coordinates
