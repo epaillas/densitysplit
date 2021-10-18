@@ -23,5 +23,5 @@ if you want to run it on a cosmological simulation, or
 
 `python ds_survey -p configuration_file.yaml`
 
-if you are working with a galaxy survey. You can also overwrite the YAML configuration parameters by providing specific command-line arguments, which is useful if you want to run the code many times with different input parameters. You can find example scripts of this under the `examples directory`.
+if you are working with a galaxy survey. You can also overwrite the YAML configuration parameters by providing specific command-line arguments, which is useful if you want to run the code many times with different input parameters. You can find example scripts of this under the `examples` directory.
 
