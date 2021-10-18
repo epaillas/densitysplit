@@ -123,7 +123,7 @@ class DensitySplit:
             cosmo = Cosmology(omega_m=self.params['omega_m'])
 
             # convert tracer coordinates
-            converted_file = f'{handle}_tracers_sky.dat'
+            converted_file = f'{handle}_tracers_comoving.dat'
             if not path.isfile(converted_file):
                 tracers = np.genfromtxt(self.params['tracers_filename'])
                 ra = tracers[:, 0]
@@ -136,7 +136,7 @@ class DensitySplit:
             self.params['tracers_filename'] = converted_file 
 
             # convert random coordinates
-            converted_file = f'{handle}_randoms_sky.dat'
+            converted_file = f'{handle}_randoms_comoving.dat'
             if not path.isfile(converted_file):
                 randoms = np.genfromtxt(self.params['randoms_filename'])
                 ra = randoms[:, 0]
