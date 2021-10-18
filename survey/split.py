@@ -56,8 +56,8 @@ class DensitySplit:
                     if self.params['omega_m'] is None:
                         raise ValueError('If convert_seeds is True, '
                                          'omega_m needs to be specified.')
-                cosmo = Cosmology(omega_m=self.params['omega_m'])
-                seeds = sky_to_cartesian(seeds, cosmo)
+                    cosmo = Cosmology(omega_m=self.params['omega_m'])
+                    seeds = sky_to_cartesian(seeds, cosmo)
 
             elif self.params['seeds_method'] == 'uniform':
                 x = np.random.uniform(
