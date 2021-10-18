@@ -84,8 +84,6 @@ class DensitySplit:
             seeds = np.c_[seeds, weights]
 
             # save to file
-            handle = self.params['handle']
-            seeds_filename = f'{handle}_seeds.dat'
             np.savetxt(seeds_filename, seeds)
 
     def split_densities(self):
