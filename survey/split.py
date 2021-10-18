@@ -36,6 +36,7 @@ class DensitySplit:
 
         handle = self.params['handle']
         seeds_filename = self.params['seeds_filename']
+        print(seeds_filename)
         if not path.isfile(seeds_filename):
             if self.params['seeds_method'] == 'subsampling':
                 sampling_filename = self.params['sampling_filename']
