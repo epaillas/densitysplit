@@ -196,10 +196,10 @@ class DensitySplit:
         smoothed_delta = np.genfromtxt(filter_filename)
         quantiles = self.params['quantiles']
         seeds = np.genfromtxt(self.params['seeds_filename'])
-        if self.params['convert_seeds']:
-            cosmo = Cosmology(omega_m=self.params['omega_m'])
-            sky_seeds = cartesian_to_sky(seeds, cosmo)
-            seeds[:, :3] = sky_seeds
+        # if self.params['convert_seeds']:
+        #     cosmo = Cosmology(omega_m=self.params['omega_m'])
+        #     sky_seeds = cartesian_to_sky(seeds, cosmo)
+        #     seeds[:, :3] = sky_seeds
         nseeds = len(seeds)
         idx = np.argsort(smoothed_delta)
         sorted_seeds = seeds[idx]
