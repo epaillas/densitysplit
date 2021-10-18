@@ -19,9 +19,6 @@ parser.add_argument('-w', '--use_weights')
 parser.add_argument('-T', '--nthreads')
 parser.add_argument('--sampling_filename')
 
-
-# TODO add all required input CL parameters
-
 args = parser.parse_args()
 
 # load parameter from YAML file
@@ -32,9 +29,6 @@ with open(args.parameter_file) as file:
 for name in vars(args):
     if args.__dict__[name] is not None:
         params[name] = args.__dict__[name]
-
-
-params['seeds_filename'] = f'{params["handle"]}_seeds.dat'
 
 pipe = DensitySplit(params)
 
