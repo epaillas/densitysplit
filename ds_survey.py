@@ -15,7 +15,7 @@ parser.add_argument('-r', '--randoms_filename')
 parser.add_argument('-q', '--quantiles')
 parser.add_argument('-s', '--nseeds')
 parser.add_argument('-w', '--use_weights')
-parser.add_argument('-t', '--nthreads')
+parser.add_argument('-T', '--nthreads')
 parser.add_argument('--sampling_filename')
 
 
