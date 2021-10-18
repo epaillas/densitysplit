@@ -35,8 +35,7 @@ class DensitySplit:
         np.random.seed(0)  # set random seed for reproducibility
 
         handle = self.params['handle']
-        seeds_filename = f'{handle}_seeds.dat'
-        self.params['seeds_filename'] = seeds_filename
+        seeds_filename = self.params['seeds_filename']
         if not path.isfile(seeds_filename):
             if self.params['seeds_method'] == 'subsampling':
                 sampling_filename = self.params['sampling_filename']
@@ -123,9 +122,10 @@ class DensitySplit:
             cosmo = Cosmology(omega_m=self.params['omega_m'])
 
             # convert tracer coordinates
-            converted_file = f'{handle}_tracers_comoving.dat'
+            tracers_filename = self.params['tracers_filename']
+            converted_file = f'{tracers_filename}_comoving'
             if not path.isfile(converted_file):
-                tracers = np.genfromtxt(self.params['tracers_filename'])
+                tracers = np.genfromtxt(tracers_filename)
                 ra = tracers[:, 0]
                 dec = tracers[:, 1]
                 z = tracers[:, 2]
@@ -136,7 +136,8 @@ class DensitySplit:
             self.params['tracers_filename'] = converted_file 
 
             # convert random coordinates
-            converted_file = f'{handle}_randoms_comoving.dat'
+            randoms_filename = self.params['randoms_filename']
+            converted_file = f'{randoms_filename}_comoving'
             if not path.isfile(converted_file):
                 randoms = np.genfromtxt(self.params['randoms_filename'])
                 ra = randoms[:, 0]
