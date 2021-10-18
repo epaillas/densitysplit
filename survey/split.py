@@ -4,7 +4,7 @@ import numpy as np
 import subprocess
 from scipy.io import FortranFile
 from .cosmology import Cosmology
-from .utilities import sky_to_cartesian
+from .utilities import sky_to_cartesian, cartesian_to_sky
 
 
 class DensitySplit:
@@ -196,6 +196,10 @@ class DensitySplit:
         smoothed_delta = np.genfromtxt(filter_filename)
         quantiles = self.params['quantiles']
         seeds = np.genfromtxt(self.params['seeds_filename'])
+        if self.params['convert_seeds']:
+            cosmo = Cosmology(omega_m=self.params['omega_m'])
+            sky_seeds = cartesian_to_sky(seeds)
+            seeds[:, :3] = sky_seeds
         nseeds = len(seeds)
         idx = np.argsort(smoothed_delta)
         sorted_seeds = seeds[idx]
@@ -206,5 +210,5 @@ class DensitySplit:
                 int((i - 1) * nseeds / quantiles):int(i * nseeds / quantiles)]
 
             cout = binned_seeds[f'DS{i}']
-            quantiles_filename = f'{handle}_DS{i}_seeds.dat'
+            quantiles_filename = f'{handle}_DS{i}_seeds_sky.dat'
             np.savetxt(quantiles_filename, cout)
