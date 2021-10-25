@@ -50,7 +50,7 @@ def cartesian_to_sky(data, cosmology):
                 Object describing the cosmology for coordinate conversion.
     '''
 
-    x = data[:, 1]
+    x = data[:, 0]
     y = data[:, 1]
     z = data[:, 2]
 
