@@ -32,7 +32,6 @@ class DensitySplit:
         selected from a uniform distribution within
         a rectangular boundary.
         """
-        np.random.seed(0)  # set random seed for reproducibility
 
         handle = self.params['handle']
         seeds_filename = self.params['seeds_filename']
