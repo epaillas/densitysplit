@@ -54,17 +54,22 @@ def cartesian_to_sky(data, cosmology):
     y = data[:, 1]
     z = data[:, 2]
 
-    dis = np.sqrt(x ** 2 + y ** 2 + z ** 2)
-    dec = np.arctan2(np.sqrt(x ** 2 + y ** 2), z) * 180 / np.pi
-    ra = np.arctan2(y, x) * 180 / np.pi
-    redshift = cosmology.Redshift(dis)
+    dist = np.sqrt(x ** 2 + y ** 2 + z ** 2)
+    dec = 90 - np.degrees(np.arccos(z / dist))
+    ra = np.degrees(np.arctan2(y, x))
+    ra[ra < 0] += 360
+    redshift = cosmology.Redshift(dist)
 
-    ind = ra > 360
-    ra[ind] -= 360
-    ind = ra < 0
-    ra[ind] += 360
+    # dis = np.sqrt(x ** 2 + y ** 2 + z ** 2)
+    # dec = np.arctan2(np.sqrt(x ** 2 + y ** 2), z) * 180 / np.pi
+    # ra = np.arctan2(y, x) * 180 / np.pi
 
-    dec = 90 - dec
+    # ind = ra > 360
+    # ra[ind] -= 360
+    # ind = ra < 0
+    # ra[ind] += 360
+
+    # dec = 90 - dec
 
     cout = np.c_[ra, dec, redshift]
     return cout
