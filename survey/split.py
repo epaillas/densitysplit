@@ -210,4 +210,4 @@ class DensitySplit:
 
             cout = binned_seeds[f'DS{i}']
             quantiles_filename = f'{handle}_DS{i}_seeds_sky.dat'
-            np.savetxt(quantiles_filename, cout)
+            np.savetxt(quantiles_filename, cout, fmt=4*'%10.5f')
