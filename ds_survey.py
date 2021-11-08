@@ -18,7 +18,6 @@ parser.add_argument('-S', '--seeds_filename')
 parser.add_argument('-A', '--sampling_filename')
 parser.add_argument('-w', '--use_weights')
 parser.add_argument('-T', '--nthreads')
-parser.add_argument('--sampling_filename')
 
 args = parser.parse_args()
 
