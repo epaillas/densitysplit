@@ -6,23 +6,25 @@ from scipy.special import eval_legendre
 from scipy.integrate import simps
 
 
-def sky_to_cartesian(data, cosmology):
+def sky_to_cartesian(ra, dec, redshift, cosmology):
     '''
     Converts a catalogue in sky coordinates
     to comoving cartesian coordinates. This
     assumes the usual convention where
     RA = [0, 360] and DEC = [-90, 90].
 
-    Parameters:  data: 2D array_like
-                 Array containing the catalogue in sky coordinates.
+    Parameters:  ra: 1D array_like
+                 Right ascension in degrees
+
+                 dec: 1D array_like
+                 Declination in degrees
+
+                 z: 1D array_like
+                 Redshift
 
                  cosmology: Cosmology object
                  Object describing the cosmology for coordinate conversion.
     '''
-
-    ra = data[:, 0]
-    dec = data[:, 1]
-    redshift = data[:, 2]
 
     if np.any(dec > 90):
         dec = 90 - dec
@@ -36,23 +38,25 @@ def sky_to_cartesian(data, cosmology):
     return cout
 
 
-def cartesian_to_sky(data, cosmology):
+def cartesian_to_sky(x, y, z, cosmology):
     '''
     Converts a catalogue in comoving cartesian
     coordinates to sky coordinates. The returned
     array is in the usual convetion RA = [0, 360]
     and DEC = [-90, 90].
 
-    Parameters:  data: 2D array_like
-                 Array containing the catalogue in cartesian coordinates.
+    Parameters: x: 1D array_like
+                Comoving coordinates in the x-axis
+
+                y: 1D array_like
+                Comoving coordinates in the y-axis
+
+                z: 1D array_like
+                Comoving coordinates in the z-axis
 
                 cosmology: Cosmology object
                 Object describing the cosmology for coordinate conversion.
     '''
-
-    x = data[:, 0]
-    y = data[:, 1]
-    z = data[:, 2]
 
     dist = np.sqrt(x ** 2 + y ** 2 + z ** 2)
     dec = 90 - np.degrees(np.arccos(z / dist))
@@ -73,6 +77,15 @@ def cartesian_to_sky(data, cosmology):
 
     cout = np.c_[ra, dec, redshift]
     return cout
+
+def read_unformatted(filename):
+
+    with FortranFile(filename, 'r') as fin:
+        nrows = fin.read_ints()[0]
+        ncols = fin.read_ints()[0]
+        data = fin.read_reals().reshape(nrows, ncols)
+
+    return data
 
 
 def save_as_unformatted(data, filename):

@@ -1,25 +1,27 @@
-# Configuration file to run the density split
-# pipeline on a cosmological survey.
+input:
+  data_fn: Patchy_NGC_0001_sky.fits
+  randoms_fn: Patchy_Randoms_NGC_sky.fits
+  format: rdz
+  rdz: [RA, DEC, Z]
+  rdz_randoms: [RA, DEC, Z]
+  mask: (${Z} > 0.4) & (${Z} < 0.73)
+  mask_randoms: (${Z} > 0.4) & (${Z} < 0.73)
+  weights: ${WEIGHT_TOT}
+  weights_randoms: ${WEIGHT_TOT}
 
-handle: 'test'
-filter_radius: 30 
-use_weights: False
-tracers_filename: Patchy-Mocks-DR12NGC-COMPSAM_V6C_0001.dat 
-randoms_filename: Patchy-Mocks-Randoms-DR12NGC-COMPSAM_V6C_x10.dat
-ngrid: 200
-nthreads: 1
-quantiles: 5
+output:
+  handle: Patchy_NGC_0001
+  seeds_fn: Patchy_NGC_seeds
 
-sampling_filename: Patchy-Mocks-Randoms-DR12NGC-COMPSAM_V6C_x10.dat
-seeds_method: 'subsampling'
-nseeds: 1000
-omega_m: 0.307
-convert_seeds: True
-convert_tracers: True
-seeds_xmin: 
-seeds_xmax:
-seeds_ymin:
-seeds_ymax:
-seeds_zmin:
-seeds_zmax:
+algorithm:
+  smoothing_radius: 25
+  nseeds: 10000
+  nquantiles: 5
+  nthreads: 56
+
+cosmology:
+  omega_m: 0.307
+
+mesh:
+  nmesh: 200
 
