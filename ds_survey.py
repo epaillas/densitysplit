@@ -48,7 +48,7 @@ if args.nquantiles is not None:
 
 pipe = DensitySplit(params)
 
-if not path.isfile(params['seeds_filename']):
+if not path.isfile(params['output']['seeds_fn']):
     pipe.generate_seeds()
 
 pipe.split_densities()
