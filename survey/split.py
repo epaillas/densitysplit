@@ -157,14 +157,17 @@ class DensitySplit:
 
     def generate_seeds(self):
 
-        # sample from randoms file
-        sampling_data = self.positions['randoms']
-        nseeds = self.params['algorithm']['nseeds']
-        idx = np.random.choice(
-            len(sampling_data), size=nseeds, replace=False
-        )
-        seeds = sampling_data[idx]
-        save_as_unformatted(seeds, self.params['output']['seeds_fn'])
+        if self.selection_function == 'randoms'
+            # sample from randoms file
+            sampling_data = self.positions['randoms']
+            nseeds = self.params['algorithm']['nseeds']
+            idx = np.random.choice(
+                len(sampling_data), size=nseeds, replace=False
+            )
+            seeds = sampling_data[idx]
+            save_as_unformatted(seeds, self.params['output']['seeds_fn'])
+        else:
+            raise Exception('Uniform selection function, but boxsize not provided')
 
     def split_densities(self):
         """
