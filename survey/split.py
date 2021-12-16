@@ -154,10 +154,8 @@ class DensitySplit:
 
             self.catalogs[name] = catalog
 
-
     def generate_seeds(self):
-
-        if self.selection_function == 'randoms'
+        if self.selection_function == 'randoms':
             # sample from randoms file
             sampling_data = self.positions['randoms']
             nseeds = self.params['algorithm']['nseeds']
@@ -167,7 +165,8 @@ class DensitySplit:
             seeds = sampling_data[idx]
             save_as_unformatted(seeds, self.params['output']['seeds_fn'])
         else:
-            raise Exception('Uniform selection function, but boxsize not provided')
+            raise Exception('Uniform selection function, '
+                   ' but boxsize not provided')
 
     def split_densities(self):
         """
