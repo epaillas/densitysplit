@@ -42,9 +42,7 @@ class DensitySplit:
         selection_function = self.params['algorithm'].pop(
                 'selection_function', '').lower()
         if selection_function not in allowed_selection_functions:
-            raise Exception('Unknown input selection '
-                'function {}. Choices are {}'.format(
-                selection_function, allowed_selection_functions))
+            raise Exception('Unknown input selection function {}. Choices are {}'.format(selection_function, allowed_selection_functions))
         # First check what we have in input/output
         input_fns, output_fns = {}, {}
         for name in ['data', 'randoms']:
