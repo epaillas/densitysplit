@@ -31,11 +31,47 @@ class DensitySplit:
         self.catalogs = {}
         self.positions = {}
         self.weights = {}
-        positions = {}
         columns = []
         input_format = {}
         input_fns, output_fns = {}, {}
         self.input_fns_unf = {}
+
+        # Whether nbar is provided by randoms catalog,
+        # or nbar is assumed uniform
+        allowed_selection_functions = ['uniform', 'randoms', '']
+        selection_function = self.params['algorithm'].pop(
+                'selection_function', '').lower()
+        if selection_function not in allowed_selection_functions:
+            raise Exception('Unknown input selection '
+                'function {}. Choices are {}'.format(
+                selection_function, allowed_selection_functions))
+        # First check what we have in input/output
+        input_fns, output_fns = {}, {}
+        for name in ['data', 'randoms']:
+            tmp_fn = self.params['input'].get('{}_fn'.format(name), None)
+            if tmp_fn is None:
+                if name == 'randoms':
+                    if selection_function == 'randoms':
+                        raise Exception('Please provide randoms catalog.')
+                    # No randoms provided and no instruction on selection function, defaults to uniform nbar
+                    if not selection_function:
+                        # logger.info('No randoms provided.')
+                        selection_function = 'uniform'
+                else:
+                    raise Exception('Please provide data catalog.')
+            else: # We've got a file name!
+                input_fns[name] = tmp_fn
+            tmp_fn = self.params['output'].get('{}_fn'.format(name), None)
+            if tmp_fn is not None:
+                # Check that requested catalog can be supplied given input
+                if name not in input_fns:
+                    raise Exception('Cannot output {} catalog if not provided as input.'.format(name))
+                output_fns[name] = tmp_fn
+        # Randoms catalog provided and no instruction on selection function, defaults to nbar from randoms
+        if not selection_function:
+            selection_function = 'randoms'
+        # logger.info('Using {} selection function.'.format(selection_function))
+        self.selection_function = selection_function
 
         for name in ['data', 'randoms']:
             input_fns[name] = self.params['input'].get('{}_fn'.format(name), None)
