@@ -1,0 +1,25 @@
+input:
+  data_fn: Patchy_NGC_0001_sky.fits
+  randoms_fn: Patchy_Randoms_NGC_sky.fits
+  format: rdz
+  rdz: [RA, DEC, Z]
+  rdz_randoms: [RA, DEC, Z]
+  mask: (${Z} > 0.4) & (${Z} < 0.73)
+  mask_randoms: (${Z} > 0.4) & (${Z} < 0.73)
+  weights: ${WEIGHT_TOT}
+  weights_randoms: ${WEIGHT_TOT}
+
+output:
+  handle: Patchy_NGC_0001
+  seeds_fn: Patchy_NGC_seeds
+
+algorithm:
+  selection_function: uniform
+  box_size: 2000
+  smoothing_radius: 25
+  nseeds: 10000
+  nquantiles: 5
+  nthreads: 56
+
+cosmology:
+  omega_m: 0.307
