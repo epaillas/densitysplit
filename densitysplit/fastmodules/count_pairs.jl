@@ -17,7 +17,7 @@ function count_pairs_survey(
     positions2 = convert(Array{Float64}, positions2)
     weights1 = convert(Array{Float64}, weights1)
     weights2 = convert(Array{Float64}, weights2)
-    npos1 = size(positions1)[1]
+    npos1 = size(positions1)[2]
     D1D2 = zeros(Int, npos1);
     
     box = Box(limits(positions1, positions2), rmax)
@@ -42,9 +42,8 @@ function count_pairs_box(
     positions2 = convert(Array{Float64}, positions2)
     weights1 = convert(Array{Float64}, weights1)
     weights2 = convert(Array{Float64}, weights2)
-    npos1 = size(positions1)[1]
+    npos1 = size(positions1)[2]
     D1D2 = zeros(Int, npos1);
-    
     Lbox = [box_size, box_size, box_size]
     box = Box(Lbox, rmax)
 

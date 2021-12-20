@@ -14,8 +14,7 @@ from densitysplit.utilities import sky_to_cartesian, cartesian_to_sky
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '-p', '--parameter_file', help='YAML parameter file',
-        default='parameters/ds_survey.yaml')
+        '-p', '--parameter_file', help='YAML parameter file', required=True)
     parser.add_argument('-f', '--smoothing_radius')
     parser.add_argument('-H', '--handle')
     parser.add_argument('-t', '--data_fn')
@@ -50,7 +49,7 @@ def main():
     if args.nquantiles is not None:
         params['algorithm']['nquantiles'] = args.nquantiles
 
-    def decode_eval_str(self, s):
+    def decode_eval_str(s):
         # Change ${col} => col, and return list of columns
         if s is None:
             return '', []
@@ -64,7 +63,7 @@ def main():
                 columns.append(col)
         return toret, columns
 
-    def remove_duplicates(self, cols):
+    def remove_duplicates(cols):
         # Remove duplicate column names
         toret = []
         for col in cols:
@@ -72,7 +71,7 @@ def main():
                 toret.append(col)
         return toret
 
-    def make_list(self, cols):
+    def make_list(cols):
         # Turn single column name to list of column names
         if cols is None:
             return []
@@ -80,13 +79,14 @@ def main():
             cols = [cols]
         return cols
 
-    params = args.param_file
     allowed_formats = ['rdz', 'xyz']
     positions = {}
     weights = {}
     columns = []
     input_format = {}
     input_fns, output_fns = {}, {}
+
+    # print(params['algorithm'])
 
     # Whether nbar is provided by randoms catalog,
     # or nbar is assumed uniform
@@ -163,6 +163,7 @@ def main():
 
         columns = remove_duplicates(columns)
 
+        # TODO treat case when randoms are not present
         with fits.open(input_fns[name]) as hdul:
             tmp = hdul[1].data
     
@@ -170,10 +171,10 @@ def main():
         for col in columns:
             catalog[col] = tmp[col]
 
-        mask = eval(mask_str, catalog)
-        
-        for col in columns:
-            catalog[col] = catalog[col][mask]
+        if mask_str:
+            mask = eval(mask_str, catalog)
+            for col in columns:
+                catalog[col] = catalog[col][mask]
 
         # prepare Cartesian positions from input columns
         if format == 'rdz':
@@ -181,10 +182,9 @@ def main():
                 raise Exception('Format rdz requires 3 position columns')
             omega_m = params['cosmology']['omega_m']
             cosmo = Cosmology(omega_m=omega_m)
-            positions[name] = sky_to_cartesian(
-                catalog[position_columns[0]], catalog[position_columns[1]],
-                catalog[position_columns[2]], cosmo
-            )
+            pos = np.c_[catalog[position_columns[0]],
+                catalog[position_columns[1]], catalog[position_columns[2]]]
+            positions[name] = sky_to_cartesian(pos, cosmo)
 
         else:  # format == 'xyz'
             if len(position_columns) == 3:  # X, Y, Z
@@ -202,35 +202,55 @@ def main():
         if weight_str:
             weights[name] = eval(weight_str, catalog)
 
+        if selection_function == 'uniform':
+            sampling_data = None
+            box_size = params['algorithm']['box_size']
+            randoms_positions2 = None
+            randoms_weights2 = None
+        else:
+            sampling_data = positions['randoms']
+            box_size=None
+
         seeds = get_seeds(
             nseeds=params['algorithm']['nseeds'],
-            box_size=params['algorithm']['box_size'],
             selection_function=selection_function,
-            sampling_data=positions['randoms']
+            sampling_data=sampling_data,
+            box_size=box_size
         )
 
         density_pdf = get_density_pdf(
+            selection_function=selection_function,
             smoothing_radius=params['algorithm']['smoothing_radius'],
             data_positions1=seeds,
             data_weights1=np.ones(len(seeds)),
             data_positions2=positions['data'],
             data_weights2=weights['data'],
-            random_positions2=positions['randoms'],
-            random_weights2=weights['randoms'],
-            selection_function=selection_function,
-            box_size=params['algorithm']['box_size']
+            randoms_positions2=randoms_positions2,
+            randoms_weights2=randoms_weights2,
+            box_size=box_size
         )
+
+        nquantiles = params['algorithm']['nquantiles']
 
         quantiles = get_quantiles(
             seeds=seeds,
             density_pdf=density_pdf,
-            nquantiles=params['algorithm']['nquantiles']
+            nquantiles=nquantiles
         )
 
         if input_format['data'] == 'rdz':
             omega_m = params['cosmology']['omega_m']
             cosmo = Cosmology(omega_m)
-            quantiles = cartesian_to_sky(quantiles)
+            for i in range(1, nquantiles + 1):
+                quantiles[f'DS{i}'] = cartesian_to_sky(quantiles[f'DS{i}'], cosmo)
+
+        print(quantiles['DS1'])
 
         # TODO write output files
         # (and possibly optional intermediate files)
+
+        print('Finished')
+
+
+if __name__ == '__main__':
+    main()

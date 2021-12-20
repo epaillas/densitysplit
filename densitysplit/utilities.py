@@ -28,7 +28,7 @@ def sky_to_cartesian(data, cosmology):
 
     ra = data[:, 0]
     dec = data[:, 1]
-    z = data[:, 2]
+    redshift = data[:, 2]
 
     if np.any(dec > 90):
         dec = 90 - dec
