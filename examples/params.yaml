@@ -1,8 +1,8 @@
 input:
-  data_fn: data/R101_S15.fits
+  data_fn: data/mock_data.fits
   randoms_fn: 
   format: xyz 
-  rdz: [X, Y, Z]
+  xyz: [X, Y, Z]
   rdz_randoms: 
   mask: 
   mask_randoms:
@@ -10,14 +10,14 @@ input:
   weights_randoms:
 
 output:
-  handle: R101_S15 
-  seeds_fn: R101_S15_seeds
+  handle: mock_data 
+  seeds_fn: mock_data 
 
 algorithm:
   selection_function: uniform
-  box_size: 2000
+  box_size: 1500
   smoothing_radius: 20
-  nseeds: 10000
+  nseeds: 1000000
   nquantiles: 5
   nthreads: 4
 

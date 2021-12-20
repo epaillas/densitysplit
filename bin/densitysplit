@@ -4,6 +4,7 @@
 from astropy.io import fits
 import argparse
 import re
+import os
 import numpy as np
 import yaml
 from densitysplit.pipeline import get_seeds, get_density_pdf, get_quantiles
@@ -123,8 +124,8 @@ def main():
         selection_function = 'randoms'
     # logger.info('Using {} selection function.'.format(selection_function))
 
-    for name in ['data', 'randoms']:
-        input_fns[name] = params['input'].get('{}_fn'.format(name), None)
+    # for name in ['data', 'randoms']:
+    #     input_fns[name] = params['input'].get('{}_fn'.format(name), None)
 
     for name in input_fns:
         input_format[name] = None
@@ -163,9 +164,10 @@ def main():
 
         columns = remove_duplicates(columns)
 
-        # TODO treat case when randoms are not present
-        with fits.open(input_fns[name]) as hdul:
-            tmp = hdul[1].data
+        fn = os.path.join(params['input'].get('dir',''), input_fns[name])
+        if fn.endswith('fits'):
+            with fits.open(input_fns[name]) as hdul:
+                tmp = hdul[1].data
     
         catalog = {}
         for col in columns:
@@ -211,6 +213,7 @@ def main():
             sampling_data = positions['randoms']
             box_size=None
 
+        # generate initial random points
         seeds = get_seeds(
             nseeds=params['algorithm']['nseeds'],
             selection_function=selection_function,
@@ -218,6 +221,7 @@ def main():
             box_size=box_size
         )
 
+        # generate density pdf of random points
         density_pdf = get_density_pdf(
             selection_function=selection_function,
             smoothing_radius=params['algorithm']['smoothing_radius'],
@@ -230,27 +234,29 @@ def main():
             box_size=box_size
         )
 
+        # split densities in quantiles
         nquantiles = params['algorithm']['nquantiles']
-
         quantiles = get_quantiles(
             seeds=seeds,
             density_pdf=density_pdf,
             nquantiles=nquantiles
         )
 
+        # convert quantiles back to sky coordinates if necessary
         if input_format['data'] == 'rdz':
             omega_m = params['cosmology']['omega_m']
             cosmo = Cosmology(omega_m)
             for i in range(1, nquantiles + 1):
                 quantiles[f'DS{i}'] = cartesian_to_sky(quantiles[f'DS{i}'], cosmo)
 
-        print(quantiles['DS1'])
+        # write output files
+        handle = params['output']['handle']
 
-        # TODO write output files
-        # (and possibly optional intermediate files)
+        output_fn = f'{handle}_density_pdf.npy'
+        np.save(output_fn, density_pdf)
 
-        print('Finished')
-
+        output_fn = f'{handle}_quantiles.npy'
+        np.save(output_fn, quantiles)
 
 if __name__ == '__main__':
     main()

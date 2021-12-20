@@ -5,8 +5,10 @@ using PyCall
 using DelimitedFiles
 
 
-function _count_pairs!(i, j, weights1, weights2, counts)
-    counts[i] += weights1[i] * weights2[j]
+function _count_pairs!(i, j, d2, weights1, weights2, counts)
+    if d2 > 0
+        counts[i] += weights1[i] * weights2[j]
+    end
     return counts
 end 
 
@@ -26,7 +28,7 @@ function count_pairs_survey(
 
     D1D2 = map_pairwise!(
         (x, y, i, j, d2, output) ->
-        _count_pairs!(i, j, weights1, weights2, D1D2),
+        _count_pairs!(i, j, d2, weights1, weights2, D1D2),
         D1D2, box, cl,
         parallel=true
     )
@@ -51,7 +53,7 @@ function count_pairs_box(
 
     D1D2 = map_pairwise!(
         (x, y, i, j, d2, output) ->
-        _count_pairs!(i, j, weights1, weights2, D1D2),
+        _count_pairs!(i, j, d2, weights1, weights2, D1D2),
         D1D2, box, cl,
         parallel=true
     )
