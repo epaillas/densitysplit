@@ -1,8 +1,6 @@
 using CellListMap
 using StaticArrays
 using LinearAlgebra
-using PyCall
-using DelimitedFiles
 
 
 function _count_pairs!(i, j, d2, weights1, weights2, counts)
