@@ -40,9 +40,6 @@ def main():
     if args.randoms_fn is not None:
         params['input']['randoms_fn'] = args.randoms_fn
 
-    if args.handle is not None:
-        params['output']['handle'] = args.handle
-
     if args.seeds_fn is not None:
         params['output']['seeds_fn'] = args.seeds_fn
 
