@@ -252,10 +252,10 @@ def main():
         # write output files
         handle = params['output']['handle']
 
-        output_fn = f'{handle}_density_pdf.npy'
+        output_fn = f'density_pdf_{handle}_density_pdf.npy'
         np.save(output_fn, density_pdf)
 
-        output_fn = f'{handle}_quantiles.npy'
+        output_fn = f'quantiles_{handle}_quantiles.npy'
         np.save(output_fn, quantiles)
 
 if __name__ == '__main__':
