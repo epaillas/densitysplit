@@ -7,6 +7,7 @@ import re
 import os
 import numpy as np
 import yaml
+from pathlib import Path
 from densitysplit.pipeline import get_seeds, get_density_pdf, get_quantiles
 from densitysplit.cosmology import Cosmology
 from densitysplit.utilities import sky_to_cartesian, cartesian_to_sky
@@ -17,10 +18,11 @@ def main():
     parser.add_argument(
         '-p', '--parameter_file', help='YAML parameter file', required=True)
     parser.add_argument('-f', '--smoothing_radius')
-    parser.add_argument('-H', '--handle')
     parser.add_argument('-t', '--data_fn')
     parser.add_argument('-r', '--randoms_fn')
-    parser.add_argument('-q', '--nquantiles')
+    parser.add_argument('-n', '--nquantiles')
+    parser.add_argument('-d', '--density_fn')
+    parser.add_argument('-Q', '--quantiles_fn')
     parser.add_argument('-s', '--nseeds')
     parser.add_argument('-S', '--seeds_fn')
     parser.add_argument('-T', '--nthreads')
@@ -43,6 +45,12 @@ def main():
 
     if args.seeds_fn is not None:
         params['output']['seeds_fn'] = args.seeds_fn
+
+    if args.density_fn is not None:
+        params['output']['density_fn'] = args.density_fn
+
+    if args.quantiles_fn is not None:
+        params['output']['quantiles_fn'] = args.quantiles_fn
 
     if args.nthreads is not None:
         params['algorithm']['nthreads'] = args.nthreads
@@ -250,12 +258,12 @@ def main():
                 quantiles[f'DS{i}'] = cartesian_to_sky(quantiles[f'DS{i}'], cosmo)
 
         # write output files
-        handle = params['output']['handle']
 
-        output_fn = f'density_pdf_{handle}_density_pdf.npy'
+        output_dir = params['output']['dir']
+        output_fn = Path(output_dir, params['output']['density_fn'])
         np.save(output_fn, density_pdf)
 
-        output_fn = f'quantiles_{handle}_quantiles.npy'
+        output_fn = Path(output_dir, params['output']['quantiles_fn'])
         np.save(output_fn, quantiles)
 
 if __name__ == '__main__':

@@ -11,8 +11,10 @@ input:
   weights_randoms: ${WEIGHT_TOT}
 
 output:
-  handle: Patchy_NGC_0001
-  seeds_fn: Patchy_NGC_seeds
+  dir: ./
+  quantiles: quantiles.npy
+  density_pdf: density_pdf.npy
+  seeds_fn: quantiles_Patchy_NGC_seeds
 
 algorithm:
   selection_function: uniform
