@@ -48,15 +48,6 @@ def get_density_pdf(
         Main.weights2 = data_weights2
         Main.rmax = smoothing_radius
 
-        print(np.max(data_positions1.T))
-        print(np.max(data_positions2.T))
-        print(np.max(data_weights1))
-        print(np.max(data_weights2))
-        print(np.min(data_positions1.T))
-        print(np.min(data_positions2.T))
-        print(np.min(data_weights1))
-        print(np.min(data_weights2))
-
         D1D2 = jl.eval("count_pairs_survey(positions1, positions2, weights1, weights2, rmax)")
 
         Main.positions2 = randoms_positions2.T 
