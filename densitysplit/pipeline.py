@@ -42,15 +42,15 @@ def get_density_pdf(
     jl.eval(f'include("{module_path}")')
 
     if selection_function == 'randoms':
-        Main.positions1 = data_positions1
+        Main.positions1 = data_positions1.T
         Main.weights1 = data_weights1
-        Main.positions2 = data_positions2
+        Main.positions2 = data_positions2.T
         Main.weights2 = data_weights2
         Main.rmax = smoothing_radius
 
         D1D2 = jl.eval("count_pairs_survey(positions1, positions2, weights1, weights2, rmax)")
 
-        Main.positions2 = randoms_positions2 
+        Main.positions2 = randoms_positions2.T 
         Main.weights2 = randoms_weights2 
 
         D1R2 = jl.eval("count_pairs_survey(positions1, positions2, weights1, weights2, rmax)")
