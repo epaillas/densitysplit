@@ -24,7 +24,7 @@ function count_pairs_survey(
     # xmax2 = maximum(maximum(positions2))
     # xmax = maximum([xmax1, xmax2]) + rmax
     # Lbox = [xmax, xmax, xmax]
-    Lb0x = [5000, 5000, 5000]
+    Lbox = [5000, 5000, 5000]
     box = Box(Lbox, rmax)
 
     cl = CellList(positions1, positions2, box)
