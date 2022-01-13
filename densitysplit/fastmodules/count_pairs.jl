@@ -20,11 +20,11 @@ function count_pairs_survey(
     npos1 = size(positions1)[2]
     D1D2 = zeros(Int, npos1);
    
-    xmax1 = maximum(maximum(positions1))
-    xmax2 = maximum(maximum(positions2))
-    xmax = maximum([xmax1, xmax2]) + rmax
-    Lbox = [xmax, xmax, xmax]
-    
+    # xmax1 = maximum(maximum(positions1))
+    # xmax2 = maximum(maximum(positions2))
+    # xmax = maximum([xmax1, xmax2]) + rmax
+    # Lbox = [xmax, xmax, xmax]
+    Lb0x = [5000, 5000, 5000]
     box = Box(Lbox, rmax)
 
     cl = CellList(positions1, positions2, box)
