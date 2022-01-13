@@ -216,7 +216,9 @@ def main():
         randoms_weights2 = None
     else:
         sampling_data = positions['randoms']
-        box_size=None
+        box_size = None
+        randoms_positions2 = positions['randoms']
+        randoms_weights2 = weights['randoms']
 
     # generate initial random points
     seeds = get_seeds(
