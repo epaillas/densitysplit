@@ -24,8 +24,8 @@ function count_pairs_survey(
 
     cl = CellList(positions1, positions2, box)
 
-    D1D2 = map_pairwise!(
-        (x, y, i, j, d2, output) ->
+    map_pairwise!(
+        (x, y, i, j, d2, D1D2) ->
         _count_pairs!(i, j, d2, weights1, weights2, D1D2),
         D1D2, box, cl,
         parallel=true
@@ -49,8 +49,8 @@ function count_pairs_box(
 
     cl = CellList(positions1, positions2, box)
 
-    D1D2 = map_pairwise!(
-        (x, y, i, j, d2, output) ->
+    map_pairwise!(
+        (x, y, i, j, d2, D1D2) ->
         _count_pairs!(i, j, d2, weights1, weights2, D1D2),
         D1D2, box, cl,
         parallel=true
