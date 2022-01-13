@@ -209,59 +209,59 @@ def main():
         if weight_str:
             weights[name] = eval(weight_str, catalog)
 
-        if selection_function == 'uniform':
-            sampling_data = None
-            box_size = params['algorithm']['box_size']
-            randoms_positions2 = None
-            randoms_weights2 = None
-        else:
-            sampling_data = positions['randoms']
-            box_size=None
+    if selection_function == 'uniform':
+        sampling_data = None
+        box_size = params['algorithm']['box_size']
+        randoms_positions2 = None
+        randoms_weights2 = None
+    else:
+        sampling_data = positions['randoms']
+        box_size=None
 
-        # generate initial random points
-        seeds = get_seeds(
-            nseeds=params['algorithm']['nseeds'],
-            selection_function=selection_function,
-            sampling_data=sampling_data,
-            box_size=box_size
-        )
+    # generate initial random points
+    seeds = get_seeds(
+        nseeds=params['algorithm']['nseeds'],
+        selection_function=selection_function,
+        sampling_data=sampling_data,
+        box_size=box_size
+    )
 
-        # generate density pdf of random points
-        density_pdf = get_density_pdf(
-            selection_function=selection_function,
-            smoothing_radius=params['algorithm']['smoothing_radius'],
-            data_positions1=seeds,
-            data_weights1=np.ones(len(seeds)),
-            data_positions2=positions['data'],
-            data_weights2=weights['data'],
-            randoms_positions2=randoms_positions2,
-            randoms_weights2=randoms_weights2,
-            box_size=box_size
-        )
+    # generate density pdf of random points
+    density_pdf = get_density_pdf(
+        selection_function=selection_function,
+        smoothing_radius=params['algorithm']['smoothing_radius'],
+        data_positions1=seeds,
+        data_weights1=np.ones(len(seeds)),
+        data_positions2=positions['data'],
+        data_weights2=weights['data'],
+        randoms_positions2=randoms_positions2,
+        randoms_weights2=randoms_weights2,
+        box_size=box_size
+    )
 
-        # split densities in quantiles
-        nquantiles = params['algorithm']['nquantiles']
-        quantiles = get_quantiles(
-            seeds=seeds,
-            density_pdf=density_pdf,
-            nquantiles=nquantiles
-        )
+    # split densities in quantiles
+    nquantiles = params['algorithm']['nquantiles']
+    quantiles = get_quantiles(
+        seeds=seeds,
+        density_pdf=density_pdf,
+        nquantiles=nquantiles
+    )
 
-        # convert quantiles back to sky coordinates if necessary
-        if input_format['data'] == 'rdz':
-            omega_m = params['cosmology']['omega_m']
-            cosmo = Cosmology(omega_m)
-            for i in range(1, nquantiles + 1):
-                quantiles[f'DS{i}'] = cartesian_to_sky(quantiles[f'DS{i}'], cosmo)
+    # convert quantiles back to sky coordinates if necessary
+    if input_format['data'] == 'rdz':
+        omega_m = params['cosmology']['omega_m']
+        cosmo = Cosmology(omega_m)
+        for i in range(1, nquantiles + 1):
+            quantiles[f'DS{i}'] = cartesian_to_sky(quantiles[f'DS{i}'], cosmo)
 
-        # write output files
+    # write output files
 
-        output_dir = params['output']['dir']
-        output_fn = Path(output_dir, params['output']['density_fn'])
-        np.save(output_fn, density_pdf)
+    output_dir = params['output']['dir']
+    output_fn = Path(output_dir, params['output']['density_fn'])
+    np.save(output_fn, density_pdf)
 
-        output_fn = Path(output_dir, params['output']['quantiles_fn'])
-        np.save(output_fn, quantiles)
+    output_fn = Path(output_dir, params['output']['quantiles_fn'])
+    np.save(output_fn, quantiles)
 
 if __name__ == '__main__':
     main()
