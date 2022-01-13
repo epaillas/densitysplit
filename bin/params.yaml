@@ -12,8 +12,8 @@ input:
 
 output:
   dir: ./
-  quantiles: quantiles.npy
-  density_pdf: density_pdf.npy
+  quantiles_fn: quantiles.npy
+  density_fn: density_pdf.npy
   seeds_fn: quantiles_Patchy_NGC_seeds
 
 algorithm:
