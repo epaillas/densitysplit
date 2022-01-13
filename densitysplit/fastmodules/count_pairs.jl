@@ -22,7 +22,7 @@ function count_pairs_survey(
    
     xmax1 = maximum(maximum(positions1))
     xmax2 = maximum(maximum(positions2))
-    xmax = maximum(xmax1, xmax2) + rmax
+    xmax = maximum([xmax1, xmax2]) + rmax
     
     box = Box(xmax, rmax)
 
