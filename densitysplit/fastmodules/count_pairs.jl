@@ -19,8 +19,12 @@ function count_pairs_survey(
     weights2 = convert(Array{Float64}, weights2)
     npos1 = size(positions1)[2]
     D1D2 = zeros(Int, npos1);
+   
+    xmax1 = maximum(maximum(positions1))
+    xmax2 = maximum(maximum(positions2))
+    xmax = maximum(x1, x2) + rmax
     
-    box = Box(limits(positions1, positions2), rmax)
+    box = Box(xmax, rmax)
 
     cl = CellList(positions1, positions2, box)
 
