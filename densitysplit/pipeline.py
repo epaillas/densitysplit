@@ -55,6 +55,8 @@ def get_density_pdf(
 
         D1R2 = jl.eval("count_pairs_survey(positions1, positions2, weights1, weights2, rmax)")
 
+        D1R2 *= np.sum(data_weights1) / np.sum(randoms_weights2)
+
     else:
         Main.positions1 = data_positions1.T
         Main.weights1 = data_weights1 
