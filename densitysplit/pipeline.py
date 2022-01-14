@@ -57,9 +57,9 @@ def get_density_pdf(
 
         D1R2 *= np.sum(data_weights2) / np.sum(randoms_weights2)
 
-        print(np.min(data_positions1), np.max(data_positions1))
-        print(np.min(data_positions2), np.max(data_positions2))
-        print(np.min(randoms_positions2), np.max(randoms_positions2))
+        print(np.min(data_weights1), np.max(data_weights1))
+        print(np.min(data_weights2), np.max(data_weights2))
+        print(np.min(randoms_weights2), np.max(randoms_weights2))
 
     else:
         Main.positions1 = data_positions1.T
