@@ -55,6 +55,9 @@ def main():
     if args.nquantiles is not None:
         params['algorithm']['nquantiles'] = args.nquantiles
 
+    if args.nseeds is not None:
+        params['algorithm']['nseeds'] = args.nseeds
+
     def decode_eval_str(s):
         # Change ${col} => col, and return list of columns
         if s is None:
