@@ -260,9 +260,9 @@ def main():
             quantiles[f'DS{i}'] = cartesian_to_sky(quantiles[f'DS{i}'], cosmo)
 
     # write output files
+    output_dir = params['output']['dir']
 
     if params['output']['save_density']:
-        output_dir = params['output']['dir']
         output_fn = Path(output_dir, params['output']['density_fn'])
         np.save(output_fn, density_pdf)
 
