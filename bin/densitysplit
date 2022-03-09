@@ -261,9 +261,10 @@ def main():
 
     # write output files
 
-    output_dir = params['output']['dir']
-    output_fn = Path(output_dir, params['output']['density_fn'])
-    np.save(output_fn, density_pdf)
+    if params['output']['save_density']:
+        output_dir = params['output']['dir']
+        output_fn = Path(output_dir, params['output']['density_fn'])
+        np.save(output_fn, density_pdf)
 
     output_fn = Path(output_dir, params['output']['quantiles_fn'])
     np.save(output_fn, quantiles)
