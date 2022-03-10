@@ -19,7 +19,8 @@ output:
 algorithm:
   selection_function: uniform
   box_size: 2000
-  smoothing_radius: 25
+  smooth_radius: 25
+  smooth_type: tophat
   nseeds: 10000
   nquantiles: 5
   nthreads: 56

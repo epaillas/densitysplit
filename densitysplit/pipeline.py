@@ -23,9 +23,10 @@ def get_seeds(
 
 
 def get_density_pdf(
-    smoothing_radius, data_positions1, data_weights1,
+    smooth_radius, data_positions1, data_weights1,
     data_positions2, data_weights2, selection_function='uniform',
-    randoms_positions2=None, randoms_weights2=None, box_size=None
+    randoms_positions2=None, randoms_weights2=None, box_size=None,
+    smooth_type='tophat'
 ):
     """
     Split the random seeds according to the local
@@ -46,14 +47,14 @@ def get_density_pdf(
         Main.weights1 = data_weights1
         Main.positions2 = data_positions2.T
         Main.weights2 = data_weights2
-        Main.rmax = smoothing_radius
+        Main.smooth_radius = smooth_radius
 
-        D1D2 = jl.eval("count_pairs_survey(positions1, positions2, weights1, weights2, rmax)")
+        D1D2 = jl.eval("count_pairs_survey(positions1, positions2, weights1, weights2, smooth_radius)")
 
         Main.positions2 = randoms_positions2.T 
         Main.weights2 = randoms_weights2 
 
-        D1R2 = jl.eval("count_pairs_survey(positions1, positions2, weights1, weights2, rmax)")
+        D1R2 = jl.eval("count_pairs_survey(positions1, positions2, weights1, weights2, smooth_radius)")
 
         D1R2 *= np.sum(data_weights2) / np.sum(randoms_weights2)
 
@@ -63,11 +64,16 @@ def get_density_pdf(
         Main.positions2 = data_positions2.T
         Main.weights2 = data_weights2
         Main.box_size = box_size
-        Main.rmax = smoothing_radius
+        Main.smooth_radius = smooth_radius
 
-        D1D2 = jl.eval("count_pairs_box(positions1, positions2, weights1, weights2, box_size, rmax)")
+        if smooth_type == 'gaussian':
+            D1D2 = jl.eval("count_pairs_box_gaussian(positions1, positions2, weights1, weights2, box_size, smooth_radius)")
+        elif smooth_type == 'tophat':
+            D1D2 = jl.eval("count_pairs_box(positions1, positions2, weights1, weights2, box_size, smooth_radius)")
+        else:
+            raise ValueError("Smoothing filter must be 'tophat' or 'gaussian'.")
 
-        bin_volume = 4/3 * np.pi * smoothing_radius ** 3
+        bin_volume = 4/3 * np.pi * smooth_radius ** 3
         mean_density = len(data_positions2) / (box_size ** 3)
 
         D1R2 = bin_volume * mean_density

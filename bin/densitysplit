@@ -17,7 +17,6 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '-p', '--parameter_file', help='YAML parameter file', required=True)
-    parser.add_argument('-f', '--smoothing_radius', type=float)
     parser.add_argument('-t', '--data_fn', type=str)
     parser.add_argument('-r', '--randoms_fn', type=str)
     parser.add_argument('-n', '--nquantiles', type=int)
@@ -234,7 +233,8 @@ def main():
     # generate density pdf of random points
     density_pdf = get_density_pdf(
         selection_function=selection_function,
-        smoothing_radius=params['algorithm']['smoothing_radius'],
+        smooth_radius=params['algorithm']['smooth_radius'],
+        smooth_type=params['algorithm']['smooth_type'],
         data_positions1=seeds,
         data_weights1=np.ones(len(seeds)),
         data_positions2=positions['data'],
@@ -268,6 +268,7 @@ def main():
 
     output_fn = Path(output_dir, params['output']['quantiles_fn'])
     np.save(output_fn, quantiles)
+
 
 if __name__ == '__main__':
     main()

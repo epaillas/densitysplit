@@ -1,4 +1,5 @@
 input:
+  dir: ./
   data_fn: data/mock_data.fits
   randoms_fn: 
   format: xyz 
@@ -10,13 +11,17 @@ input:
   weights_randoms:
 
 output:
-  handle: mock_data 
+  dir: ./
+  quantiles_fn: data/quantiles.npy
+  density_fn: data/density_pdf.npy
+  save_density: True
   seeds_fn: mock_data 
 
 algorithm:
   selection_function: uniform
   box_size: 1500
-  smoothing_radius: 20
+  smooth_radius: 10
+  smooth_type: gaussian
   nseeds: 1000000
   nquantiles: 5
   nthreads: 4
