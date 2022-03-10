@@ -223,8 +223,12 @@ def main():
         randoms_weights2 = weights['randoms']
 
     # generate initial random points
+    if params['algorithm']['auto_nseeds']:
+        nseeds = 5 * len(positions['data'])
+    else:
+        nseeds = params['algorithm']['nseeds']
     seeds = get_seeds(
-        nseeds=params['algorithm']['nseeds'],
+        nseeds=nseeds,
         selection_function=selection_function,
         sampling_data=sampling_data,
         box_size=box_size

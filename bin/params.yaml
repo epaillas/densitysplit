@@ -22,6 +22,7 @@ algorithm:
   smooth_radius: 25
   smooth_type: tophat
   nseeds: 10000
+  auto_nseeds: False
   nquantiles: 5
   nthreads: 56
 
