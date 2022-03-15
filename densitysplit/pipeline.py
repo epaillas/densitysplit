@@ -74,9 +74,9 @@ def get_density_pdf(
             raise ValueError("Smoothing filter must be 'tophat' or 'gaussian'.")
 
         bin_volume = 4/3 * np.pi * smooth_radius ** 3
-        mean_density = len(data_positions2) / (box_size ** 3)
+        mean_density = np.sum(data_weights2) / (box_size ** 3)
 
-        D1R2 = bin_volume * mean_density
+        D1R2 = bin_volume * mean_density * data_weights1
 
     delta = D1D2 / D1R2 - 1
 
