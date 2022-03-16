@@ -1,4 +1,4 @@
-from os import path
+from os import path, environ
 import numpy as np
 from julia.api import Julia
 
@@ -26,7 +26,7 @@ def get_density_pdf(
     smooth_radius, data_positions1, data_weights1,
     data_positions2, data_weights2, selection_function='uniform',
     randoms_positions2=None, randoms_weights2=None, box_size=None,
-    smooth_type='tophat'
+    smooth_type='tophat', nthreads=1
 ):
     """
     Split the random seeds according to the local
@@ -34,6 +34,7 @@ def get_density_pdf(
     """
 
     # import Julia modules
+    environ['JULIA_NUM_THREADS'] = f'{nthreads}'
     jl = Julia(compiled_modules=False)
     from julia import Main
 
