@@ -48,6 +48,7 @@ end
 function count_pairs_box(
     positions1, positions2, weights1, weights2, box_size, smooth_radius
 )
+    print(string("Julia sees ", Threads.nthreads(), " threads."))
     rmax = smooth_radius
     positions1 = convert(Array{Float64}, positions1)
     positions2 = convert(Array{Float64}, positions2)
