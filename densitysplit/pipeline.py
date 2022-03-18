@@ -15,9 +15,7 @@ def get_seeds(
         seeds = sampling_data[idx]
     else:
         # sample from a uniform distribution
-        seeds = np.array(
-            [np.random.uniform(0, box_size, nseeds) for i in range(3)]
-        ).T
+        seeds = np.random.rand(nseeds, 3) * box_size
     return seeds
 
 
