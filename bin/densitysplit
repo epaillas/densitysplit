@@ -245,7 +245,8 @@ def main():
         data_weights2=weights['data'],
         randoms_positions2=randoms_positions2,
         randoms_weights2=randoms_weights2,
-        box_size=box_size
+        box_size=box_size,
+        nthreads=params['algorithm']['nthreads']
     )
 
     # split densities in quantiles
