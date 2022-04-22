@@ -46,16 +46,17 @@ function count_pairs_survey(
 end
 
 function count_pairs_box(
-    positions1, positions2, weights1, weights2, box_size, smooth_radius
+    positions1, positions2, weights1, weights2, boxsize, smooth_radius
 )
     rmax = smooth_radius
     positions1 = convert(Array{Float64}, positions1)
     positions2 = convert(Array{Float64}, positions2)
     weights1 = convert(Array{Float64}, weights1)
     weights2 = convert(Array{Float64}, weights2)
+    boxsize = convert(Array{Float64}, boxsize)
     npos1 = size(positions1)[2]
-    D1D2 = zeros(Float64, npos1);
-    Lbox = [box_size, box_size, box_size]
+    D1D2 = zeros(Float64, npos1)
+    Lbox = [boxsize[1], boxsize[2], boxsize[3]]
     box = Box(Lbox, rmax)
 
     cl = CellList(positions1, positions2, box)
@@ -73,7 +74,7 @@ end
 
 
 function count_pairs_box_gaussian(
-    positions1, positions2, weights1, weights2, box_size, smooth_radius
+    positions1, positions2, weights1, weights2, boxsize, smooth_radius
 )
 
     rmax = 3 * smooth_radius
@@ -81,9 +82,10 @@ function count_pairs_box_gaussian(
     positions2 = convert(Array{Float64}, positions2)
     weights1 = convert(Array{Float64}, weights1)
     weights2 = convert(Array{Float64}, weights2)
+    boxsize = convert(Array{Float64}, boxsize)
     npos1 = size(positions1)[2]
     D1D2 = zeros(Float64, npos1);
-    Lbox = [box_size, box_size, box_size]
+    Lbox = [boxsize[1], boxsize[2], boxsize[3]]
     box = Box(Lbox, rmax)
 
     cl = CellList(positions1, positions2, box)

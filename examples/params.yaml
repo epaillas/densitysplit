@@ -20,9 +20,9 @@ output:
 algorithm:
   selection_function: uniform
   box_size: 1500
-  smooth_radius: 10
-  smooth_type: gaussian
-  nseeds: 1000000
+  smooth_radius: 15
+  smooth_type: tophat
+  nseeds: 5000000
   auto_nseeds: False
   nquantiles: 5
   nthreads: 4

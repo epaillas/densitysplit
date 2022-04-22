@@ -213,12 +213,12 @@ def main():
 
     if selection_function == 'uniform':
         sampling_data = None
-        box_size = params['algorithm']['box_size']
+        boxsize = params['algorithm']['boxsize']
         randoms_positions2 = None
         randoms_weights2 = None
     else:
         sampling_data = positions['randoms']
-        box_size = None
+        boxsize = None
         randoms_positions2 = positions['randoms']
         randoms_weights2 = weights['randoms']
 
@@ -231,7 +231,7 @@ def main():
         nseeds=nseeds,
         selection_function=selection_function,
         sampling_data=sampling_data,
-        box_size=box_size
+        boxsize=boxsize
     )
 
     # generate density pdf of random points
@@ -245,7 +245,7 @@ def main():
         data_weights2=weights['data'],
         randoms_positions2=randoms_positions2,
         randoms_weights2=randoms_weights2,
-        box_size=box_size,
+        boxsize=boxsize,
         nthreads=params['algorithm']['nthreads']
     )
 
