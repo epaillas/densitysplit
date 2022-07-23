@@ -34,7 +34,7 @@ class DensitySplit:
         self.density = density_mesh.readout(self.randoms_positions)
         return self.density
 
-    def get_randoms_quantiles(self, nquantiles):
+    def get_quantiles(self, nquantiles):
         quantiles_idx = qcut(self.density, nquantiles, labels=False)
         quantiles = []
         for i in range(nquantiles):
