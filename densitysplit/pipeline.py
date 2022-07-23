@@ -20,7 +20,7 @@ class DensitySplit:
     def get_data_mesh(self):
         cat_size = len(self.data_positions)
         dset = np.empty(cat_size, dtype=[('Position',
-            ('f8', 3)), ('Weight', ('f8', 1))])
+            ('f8', 3)), ('Weight', ('f8'))])
         dset['Position'][:, 0] = self.data_positions[:, 0]
         dset['Position'][:, 1] = self.data_positions[:, 1]
         dset['Position'][:, 2] = self.data_positions[:, 2]
