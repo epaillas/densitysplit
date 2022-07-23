@@ -23,8 +23,8 @@ class DensitySplit:
 
     def get_randoms_positions(self, nrandoms, seed=42):
         np.random.seed(seed)
-        self.random_positions = np.random.rand(nrandoms, 3) * self.boxsize
-        return self.random_positions
+        self.randoms_positions = np.random.rand(nrandoms, 3) * self.boxsize
+        return self.randoms_positions
 
     def get_density(self, smooth_radius):
         self.get_data_mesh()
