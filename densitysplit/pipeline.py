@@ -5,21 +5,29 @@ from pandas import qcut
 
 
 class DensitySplit:
-    def __init__(self, data_positions, boxsize, nmesh):
+    def __init__(self, data_positions, boxsize, nmesh,
+        data_weights = None):
 
         self.data_positions = data_positions
         self.boxsize = boxsize
         self.nmesh = nmesh
 
+        if data_weights:
+            self.data_weights = data_weights
+        else:
+            self.data_weights = np.ones(len(data_positions))
+
     def get_data_mesh(self):
         cat_size = len(self.data_positions)
-        dset = np.empty(cat_size, dtype=[('Position', ('f8', 3))])
+        dset = np.empty(cat_size, dtype=[('Position',
+            ('f8', 3)), ('Weight', ('f8', 1))])
         dset['Position'][:, 0] = self.data_positions[:, 0]
         dset['Position'][:, 1] = self.data_positions[:, 1]
         dset['Position'][:, 2] = self.data_positions[:, 2]
+        dset['Weight'] = self.data_weights
         cat = ArrayCatalog(dset)
         self.data_mesh = cat.to_mesh(BoxSize=self.boxsize,
-            Nmesh=self.nmesh, position='Position')
+            Nmesh=self.nmesh, position='Position', weight='Weight')
 
     def get_randoms_positions(self, nrandoms, seed=42):
         np.random.seed(seed)
