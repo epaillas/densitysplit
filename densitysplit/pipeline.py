@@ -1,96 +1,45 @@
-from os import path, environ
 import numpy as np
-from julia.api import Julia
+from nbodykit.lab import ArrayCatalog
+from nbodykit.filters import TopHat
+from pandas import qcut
 
 
-def get_seeds(
-    nseeds, box_size=None, selection_function='uniform',
-    sampling_data=None
-):
-    if selection_function == 'randoms':
-        # sample from randoms file
-        idx = np.random.choice(
-            len(sampling_data), size=nseeds, replace=False
-        )
-        seeds = sampling_data[idx]
-    else:
-        # sample from a uniform distribution
-        seeds = np.random.rand(nseeds, 3) * box_size
-    return seeds
+class DensitySplit:
+    def __init__(self, data_positions, boxsize, nmesh):
 
+        self.data_positions = data_positions
+        self.boxsize = boxsize
 
-def get_density_pdf(
-    smooth_radius, data_positions1, data_weights1,
-    data_positions2, data_weights2, selection_function='uniform',
-    randoms_positions2=None, randoms_weights2=None, box_size=None,
-    smooth_type='tophat', nthreads=1
-):
-    """
-    Split the random seeds according to the local
-    galaxy density.
-    """
+    def get_data_mesh(self):
+        cat_size = len(self.data_positions)
+        dset = np.empty(cat_size, dtype=[('Position', ('f8', 3))])
+        dset['Position'][:, 0] = self.data_positions[:, 0]
+        dset['Position'][:, 1] = self.data_positions[:, 1]
+        dset['Position'][:, 2] = self.data_positions[:, 2]
+        cat = ArrayCatalog(dset)
+        self.data_mesh = cat.to_mesh(BoxSize=self.boxsize,
+            Nmesh=self.nmesh, position='Position')
 
-    # import Julia modules
-    environ['JULIA_NUM_THREADS'] = f'{nthreads}'
-    jl = Julia(compiled_modules=False)
-    from julia import Main
+    def get_randoms_positions(self, nrandoms, seed=42):
+        np.random.seed(seed)
+        self.random_positions = np.random.rand(nrandoms, 3) * self.boxsize
+        return self.random_positions
 
-    module_path = path.join(path.dirname(__file__),
-        'fastmodules', 'count_pairs.jl')
+    def get_density(self, smooth_radius):
+        self.get_data_mesh()
+        filtered_mesh = self.data_mesh.apply(TopHat(r=smooth_radius))
 
-    jl.eval(f'include("{module_path}")')
+        painted_mesh = filtered_mesh.paint(mode='real')
+        density_mesh = painted_mesh - 1
+        self.density = density_mesh.readout(self.randoms_positions)
+        return self.density
 
-    if selection_function == 'randoms':
-        Main.positions1 = data_positions1.T
-        Main.weights1 = data_weights1
-        Main.positions2 = data_positions2.T
-        Main.weights2 = data_weights2
-        Main.smooth_radius = smooth_radius
+    def get_randoms_quantiles(self, nquantiles):
+        quantiles_idx = qcut(self.density, nquantiles, labels=False)
+        quantiles = []
+        for i in range(nquantiles):
+            quantiles.append(self.randoms_positions[quantiles_idx == i])
+        self.quantiles = quantiles
+        return self.quantiles
 
-        D1D2 = jl.eval("count_pairs_survey(positions1, positions2, weights1, weights2, smooth_radius)")
-
-        Main.positions2 = randoms_positions2.T 
-        Main.weights2 = randoms_weights2 
-
-        D1R2 = jl.eval("count_pairs_survey(positions1, positions2, weights1, weights2, smooth_radius)")
-
-        D1R2 *= np.sum(data_weights2) / np.sum(randoms_weights2)
-
-    else:
-        Main.positions1 = data_positions1.T
-        Main.weights1 = data_weights1 
-        Main.positions2 = data_positions2.T
-        Main.weights2 = data_weights2
-        Main.box_size = box_size
-        Main.smooth_radius = smooth_radius
-
-        if smooth_type == 'gaussian':
-            D1D2 = jl.eval("count_pairs_box_gaussian(positions1, positions2, weights1, weights2, box_size, smooth_radius)")
-        elif smooth_type == 'tophat':
-            D1D2 = jl.eval("count_pairs_box(positions1, positions2, weights1, weights2, box_size, smooth_radius)")
-        else:
-            raise ValueError("Smoothing filter must be 'tophat' or 'gaussian'.")
-
-        bin_volume = 4/3 * np.pi * smooth_radius ** 3
-        mean_density = np.sum(data_weights2) / (box_size ** 3)
-
-        D1R2 = bin_volume * mean_density * data_weights1
-
-    delta = D1D2 / D1R2 - 1
-
-    return delta
-
-
-def get_quantiles(seeds, density_pdf, nquantiles):
-    nseeds = len(seeds)
-    idx = np.argsort(density_pdf)
-    sorted_seeds = seeds[idx]
-
-    quantiles = {}
-    for i in range(1, nquantiles + 1):
-        quantiles[f'DS{i}'] = sorted_seeds[
-            int((i - 1) * nseeds / nquantiles):int(i * nseeds / nquantiles)
-        ]
-
-    return quantiles
 
