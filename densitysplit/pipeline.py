@@ -5,12 +5,11 @@ from pandas import qcut
 
 
 class DensitySplit:
-    def __init__(self, data_positions, boxsize, nmesh,
+    def __init__(self, data_positions, boxsize,
         data_weights=None):
 
         self.data_positions = data_positions
         self.boxsize = boxsize
-        self.nmesh = nmesh
 
         if data_weights is not None:
             self.data_weights = data_weights
@@ -27,14 +26,15 @@ class DensitySplit:
         dset['Weight'] = self.data_weights
         cat = ArrayCatalog(dset)
         self.data_mesh = cat.to_mesh(BoxSize=self.boxsize,
-            Nmesh=self.nmesh, position='Position', weight='Weight')
+            Nmesh=self.nmesh, position='Position', weight='Weight',
+            compensate=True)
 
     def get_randoms_positions(self, nrandoms, seed=42):
         np.random.seed(seed)
         self.randoms_positions = np.random.rand(nrandoms, 3) * self.boxsize
         return self.randoms_positions
 
-    def get_density(self, smooth_radius):
+    def get_density(self, smooth_radius, nmesh, compensate=False):
         self.get_data_mesh()
         filtered_mesh = self.data_mesh.apply(TopHat(r=smooth_radius))
         painted_mesh = filtered_mesh.paint(mode='real')
