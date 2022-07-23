@@ -9,6 +9,7 @@ class DensitySplit:
 
         self.data_positions = data_positions
         self.boxsize = boxsize
+        self.nmesh = nmesh
 
     def get_data_mesh(self):
         cat_size = len(self.data_positions)
