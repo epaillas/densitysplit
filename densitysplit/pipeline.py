@@ -6,13 +6,13 @@ from pandas import qcut
 
 class DensitySplit:
     def __init__(self, data_positions, boxsize, nmesh,
-        data_weights = None):
+        data_weights=None):
 
         self.data_positions = data_positions
         self.boxsize = boxsize
         self.nmesh = nmesh
 
-        if data_weights:
+        if data_weights is not None:
             self.data_weights = data_weights
         else:
             self.data_weights = np.ones(len(data_positions))
