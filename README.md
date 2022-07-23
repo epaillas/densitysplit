@@ -1,19 +1,9 @@
-## density-split-rsd 
+## densitysplit --- characterization of density-dependent galaxy clustering
 
-A package for running the redshift-space distortions with split densities pipeline presented in https://arxiv.org/abs/2101.09854.
+### requirements
 
-The interface of the code is written in Python 3, while the engine that takes care of intensive calculations is written in the Julia programming language, so you must have it installed along with the packages listed below.
-
-### Julia requirements
-
-  - `CellListMap` 
-  - `StaticArrays` 
-  - `LinearAlgebra` 
-
-### Python requirements
-
-  - `pyjulia` >= 0.5.7
-  - `numpy` >= 1.20.1
+  - `nbodykit`
+  - `numpy`
 
 ### Installation
 
@@ -21,4 +11,4 @@ Under the main directory, install the package with `python setup.py install`.
 
 ### Usage
 
-The easiest way to run the pipeline is through the stand-alone code provided in the `bin` directory, which takes a `params.yaml` configuration file as an input. Alternatively, you can import the code as a Python package and run individual parts of the pipeline as you wish. Usage examples are shown in the `examples` directory.
+The easiest way to run the pipeline is through the stand-alone code provided in the `bin` directory, which takes a `params.yaml` configuration file as an input. Alternatively, you can import the code as a Python package and run individual parts of the pipeline, which is more suitable if you need to run the code on several simulations. Usage examples are shown in the `examples` directory.
