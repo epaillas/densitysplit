@@ -1,6 +1,6 @@
 ## densitysplit --- characterization of density-dependent galaxy clustering
 
-### requirements
+### Requirements
 
   - `nbodykit`
   - `numpy`

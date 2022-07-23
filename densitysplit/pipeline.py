@@ -29,7 +29,6 @@ class DensitySplit:
     def get_density(self, smooth_radius):
         self.get_data_mesh()
         filtered_mesh = self.data_mesh.apply(TopHat(r=smooth_radius))
-
         painted_mesh = filtered_mesh.paint(mode='real')
         density_mesh = painted_mesh - 1
         self.density = density_mesh.readout(self.randoms_positions)
