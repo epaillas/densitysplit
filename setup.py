@@ -11,8 +11,8 @@ import pathlib
 setup(
     name='densitysplit',
     version='0.0.1',
-    description='Redshift-space distortions with split densities',
-    url='https://github.com/epaillas/density-split-rsd', 
+    description='icharacterization of density-dependent galaxy clustering',
+    url='https://github.com/epaillas/densitysplit', 
     author='Enrique Paillas',
         author_email='enrique.paillas@uwaterloo.ca',
     packages=find_packages(),
@@ -20,7 +20,7 @@ setup(
     python_requires='>=3.6, <4',
     install_requires=[
         'numpy',
-        'julia'
+        'nbodykit'
     ],
     scripts=['bin/densitysplit']
 )
