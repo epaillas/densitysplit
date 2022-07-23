@@ -35,7 +35,7 @@ class DensitySplit:
         return self.randoms_positions
 
     def get_density(self, smooth_radius, nmesh, compensated=False,
-        window='tsc'):
+        window='cic'):
         self.nmesh = nmesh
         self.window = window
         self.compensated = compensated
