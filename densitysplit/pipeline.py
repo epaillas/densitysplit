@@ -27,15 +27,17 @@ class DensitySplit:
         cat = ArrayCatalog(dset)
         self.data_mesh = cat.to_mesh(BoxSize=self.boxsize,
             Nmesh=self.nmesh, position='Position', weight='Weight',
-            compensated=self.compensated)
+            compensated=self.compensated, window=self.window)
 
     def get_randoms_positions(self, nrandoms, seed=42):
         np.random.seed(seed)
         self.randoms_positions = np.random.rand(nrandoms, 3) * self.boxsize
         return self.randoms_positions
 
-    def get_density(self, smooth_radius, nmesh, compensated=False):
+    def get_density(self, smooth_radius, nmesh, compensated=False,
+        window='tsc'):
         self.nmesh = nmesh
+        self.window = window
         self.compensated = compensated
         self.get_data_mesh()
         filtered_mesh = self.data_mesh.apply(TopHat(r=smooth_radius))
