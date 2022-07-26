@@ -42,7 +42,7 @@ class DensitySplit:
         self.get_data_mesh()
         with np.errstate(divide='ignore', invalid='ignore'):
             filtered_mesh = self.data_mesh.apply(TopHat(r=smooth_radius))
-        painted_mesh = filtered_mesh.paint(mode='real')
+            painted_mesh = filtered_mesh.paint(mode='real')
         density_mesh = painted_mesh - 1
         if sampling == 'randoms':
             if not hasattr(self, 'randoms_positions'):
