@@ -35,7 +35,7 @@ class DensitySplit:
         return self.randoms_positions
 
     def get_density(self, smooth_radius, nmesh, compensated=False,
-        window='cic'):
+        window='cic', sampling='randoms'):
         self.nmesh = nmesh
         self.window = window
         self.compensated = compensated
@@ -43,7 +43,12 @@ class DensitySplit:
         filtered_mesh = self.data_mesh.apply(TopHat(r=smooth_radius))
         painted_mesh = filtered_mesh.paint(mode='real')
         density_mesh = painted_mesh - 1
-        self.density = density_mesh.readout(self.randoms_positions)
+        if sampling == 'randoms':
+            if not hasattr(self.randoms_positions):
+                self.get_randoms_positions()
+            self.density = density_mesh.readout(self.randoms_positions)
+        elif sampling == 'data':
+            self.density = density_mesh.readout(self.data_positions)
         return self.density
 
     def get_quantiles(self, nquantiles):
