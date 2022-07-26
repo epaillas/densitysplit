@@ -49,13 +49,17 @@ class DensitySplit:
             self.density = density_mesh.readout(self.randoms_positions)
         elif sampling == 'data':
             self.density = density_mesh.readout(self.data_positions)
+        self.sampling = sampling
         return self.density
 
     def get_quantiles(self, nquantiles):
         quantiles_idx = qcut(self.density, nquantiles, labels=False)
         quantiles = []
         for i in range(nquantiles):
-            quantiles.append(self.randoms_positions[quantiles_idx == i])
+            if self.sampling = 'randoms':
+                quantiles.append(self.randoms_positions[quantiles_idx == i])
+            elif self.sampling == 'data':
+                quantiles.append(self.data_positions[quantiles_idx == i])
         self.quantiles = quantiles
         return self.quantiles
 
