@@ -56,7 +56,7 @@ class DensitySplit:
         quantiles_idx = qcut(self.density, nquantiles, labels=False)
         quantiles = []
         for i in range(nquantiles):
-            if self.sampling = 'randoms':
+            if self.sampling == 'randoms':
                 quantiles.append(self.randoms_positions[quantiles_idx == i])
             elif self.sampling == 'data':
                 quantiles.append(self.data_positions[quantiles_idx == i])
