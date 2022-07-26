@@ -40,7 +40,8 @@ class DensitySplit:
         self.window = window
         self.compensated = compensated
         self.get_data_mesh()
-        filtered_mesh = self.data_mesh.apply(TopHat(r=smooth_radius))
+        with np.errstate(divide='ignore', invalid='ignore'):
+            filtered_mesh = self.data_mesh.apply(TopHat(r=smooth_radius))
         painted_mesh = filtered_mesh.paint(mode='real')
         density_mesh = painted_mesh - 1
         if sampling == 'randoms':
