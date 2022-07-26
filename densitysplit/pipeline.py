@@ -44,7 +44,7 @@ class DensitySplit:
         painted_mesh = filtered_mesh.paint(mode='real')
         density_mesh = painted_mesh - 1
         if sampling == 'randoms':
-            if not hasattr(self.randoms_positions):
+            if not hasattr(self, 'randoms_positions'):
                 self.get_randoms_positions()
             self.density = density_mesh.readout(self.randoms_positions)
         elif sampling == 'data':
