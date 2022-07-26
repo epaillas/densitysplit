@@ -61,6 +61,7 @@ class DensitySplit:
             elif self.sampling == 'data':
                 quantiles.append(self.data_positions[quantiles_idx == i])
         # self.quantiles = np.array(quantiles, dtype=object)
-        return self.quantiles
+        self.quantiles = quantiles
+        return quantiles
 
 
