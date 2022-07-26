@@ -2,6 +2,9 @@ import numpy as np
 from nbodykit.lab import ArrayCatalog
 from nbodykit.filters import TopHat
 from pandas import qcut
+import warnings
+warnings.filterwarnings("ignore",
+    category=np.VisibleDeprecationWarning) 
 
 
 class DensitySplit:
