@@ -1,0 +1,138 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+AngularDiameterDistance	build/lib/densitysplit/cosmology.py	/^    def AngularDiameterDistance(self, z):$/;"	m	class:Cosmology
+AngularDiameterDistance	densitysplit/cosmology.py	/^    def AngularDiameterDistance(self, z):$/;"	m	class:Cosmology
+ComovingDistance	build/lib/densitysplit/cosmology.py	/^    def ComovingDistance(self, z):$/;"	m	class:Cosmology
+ComovingDistance	densitysplit/cosmology.py	/^    def ComovingDistance(self, z):$/;"	m	class:Cosmology
+Cosmology	bin/densitysplit	/^from densitysplit.cosmology import Cosmology$/;"	i
+Cosmology	build/lib/densitysplit/cosmology.py	/^class Cosmology:$/;"	c
+Cosmology	build/scripts-3.8/densitysplit	/^from densitysplit.cosmology import Cosmology$/;"	i
+Cosmology	densitysplit/cosmology.py	/^class Cosmology:$/;"	c
+Ez	build/lib/densitysplit/cosmology.py	/^    def Ez(self, z):$/;"	m	class:Cosmology
+Ez	densitysplit/cosmology.py	/^    def Ez(self, z):$/;"	m	class:Cosmology
+FortranFile	build/lib/densitysplit/utilities.py	/^from scipy.io import FortranFile$/;"	i
+FortranFile	densitysplit/utilities.py	/^from scipy.io import FortranFile$/;"	i
+GrowthFactor	build/lib/densitysplit/cosmology.py	/^    def GrowthFactor(self, z):$/;"	m	class:Cosmology
+GrowthFactor	densitysplit/cosmology.py	/^    def GrowthFactor(self, z):$/;"	m	class:Cosmology
+GrowthRate	build/lib/densitysplit/cosmology.py	/^    def GrowthRate(self, z):$/;"	m	class:Cosmology
+GrowthRate	densitysplit/cosmology.py	/^    def GrowthRate(self, z):$/;"	m	class:Cosmology
+HubbleParameter	build/lib/densitysplit/cosmology.py	/^    def HubbleParameter(self, z):$/;"	m	class:Cosmology
+HubbleParameter	densitysplit/cosmology.py	/^    def HubbleParameter(self, z):$/;"	m	class:Cosmology
+InterpolatedUnivariateSpline	build/lib/densitysplit/cosmology.py	/^from scipy.interpolate import InterpolatedUnivariateSpline$/;"	i
+InterpolatedUnivariateSpline	build/lib/densitysplit/utilities.py	/^from scipy.interpolate import InterpolatedUnivariateSpline$/;"	i
+InterpolatedUnivariateSpline	densitysplit/cosmology.py	/^from scipy.interpolate import InterpolatedUnivariateSpline$/;"	i
+InterpolatedUnivariateSpline	densitysplit/utilities.py	/^from scipy.interpolate import InterpolatedUnivariateSpline$/;"	i
+Julia	build/lib/densitysplit/pipeline.py	/^from julia.api import Julia$/;"	i
+Julia	densitysplit/pipeline.py	/^from julia.api import Julia$/;"	i
+Main	build/lib/densitysplit/pipeline.py	/^    from julia import Main$/;"	i
+Main	densitysplit/pipeline.py	/^    from julia import Main$/;"	i
+Path	bin/densitysplit	/^from pathlib import Path$/;"	i
+Path	build/scripts-3.8/densitysplit	/^from pathlib import Path$/;"	i
+Redshift	build/lib/densitysplit/cosmology.py	/^    def Redshift(self, r):$/;"	m	class:Cosmology
+Redshift	densitysplit/cosmology.py	/^    def Redshift(self, r):$/;"	m	class:Cosmology
+__init__	build/lib/densitysplit/cosmology.py	/^    def __init__(self,$/;"	m	class:Cosmology
+__init__	densitysplit/cosmology.py	/^    def __init__(self,$/;"	m	class:Cosmology
+argparse	bin/densitysplit	/^import argparse$/;"	i
+argparse	build/scripts-3.8/densitysplit	/^import argparse$/;"	i
+author	setup.py	/^    author='Enrique Paillas',$/;"	v
+author_email	setup.py	/^        author_email='enrique.paillas@uwaterloo.ca',$/;"	v
+cartesian_to_sky	bin/densitysplit	/^from densitysplit.utilities import sky_to_cartesian, cartesian_to_sky$/;"	i
+cartesian_to_sky	build/lib/densitysplit/utilities.py	/^def cartesian_to_sky(data, cosmology):$/;"	f
+cartesian_to_sky	build/scripts-3.8/densitysplit	/^from densitysplit.utilities import sky_to_cartesian, cartesian_to_sky$/;"	i
+cartesian_to_sky	densitysplit/utilities.py	/^def cartesian_to_sky(data, cosmology):$/;"	f
+compute_boss_weights	build/lib/densitysplit/utilities.py	/^def compute_boss_weights($/;"	f
+compute_boss_weights	densitysplit/utilities.py	/^def compute_boss_weights($/;"	f
+decode_eval_str	bin/densitysplit	/^    def decode_eval_str(s):$/;"	f	function:main
+decode_eval_str	build/scripts-3.8/densitysplit	/^    def decode_eval_str(s):$/;"	f	function:main
+description	setup.py	/^    description='Redshift-space distortions with split densities',$/;"	v
+environ	build/lib/densitysplit/pipeline.py	/^from os import path, environ$/;"	i
+environ	densitysplit/pipeline.py	/^from os import path, environ$/;"	i
+eval_legendre	build/lib/densitysplit/cosmology.py	/^from scipy.special import hyp2f1, legendre, eval_legendre$/;"	i
+eval_legendre	build/lib/densitysplit/utilities.py	/^from scipy.special import eval_legendre$/;"	i
+eval_legendre	densitysplit/cosmology.py	/^from scipy.special import hyp2f1, legendre, eval_legendre$/;"	i
+eval_legendre	densitysplit/utilities.py	/^from scipy.special import eval_legendre$/;"	i
+find_packages	setup.py	/^from setuptools import setup, find_packages$/;"	i
+fits	bin/densitysplit	/^from astropy.io import fits$/;"	i
+fits	build/lib/densitysplit/utilities.py	/^from astropy.io import fits$/;"	i
+fits	build/scripts-3.8/densitysplit	/^from astropy.io import fits$/;"	i
+fits	densitysplit/utilities.py	/^from astropy.io import fits$/;"	i
+get_density_pdf	bin/densitysplit	/^from densitysplit.pipeline import get_seeds, get_density_pdf, get_quantiles$/;"	i
+get_density_pdf	build/lib/densitysplit/pipeline.py	/^def get_density_pdf($/;"	f
+get_density_pdf	build/scripts-3.8/densitysplit	/^from densitysplit.pipeline import get_seeds, get_density_pdf, get_quantiles$/;"	i
+get_density_pdf	densitysplit/pipeline.py	/^def get_density_pdf($/;"	f
+get_multipole	build/lib/densitysplit/utilities.py	/^def get_multipole(ell, s, mu, xi_smu):$/;"	f
+get_multipole	densitysplit/utilities.py	/^def get_multipole(ell, s, mu, xi_smu):$/;"	f
+get_quantiles	bin/densitysplit	/^from densitysplit.pipeline import get_seeds, get_density_pdf, get_quantiles$/;"	i
+get_quantiles	build/lib/densitysplit/pipeline.py	/^def get_quantiles(seeds, density_pdf, nquantiles):$/;"	f
+get_quantiles	build/scripts-3.8/densitysplit	/^from densitysplit.pipeline import get_seeds, get_density_pdf, get_quantiles$/;"	i
+get_quantiles	densitysplit/pipeline.py	/^def get_quantiles(seeds, density_pdf, nquantiles):$/;"	f
+get_seeds	bin/densitysplit	/^from densitysplit.pipeline import get_seeds, get_density_pdf, get_quantiles$/;"	i
+get_seeds	build/lib/densitysplit/pipeline.py	/^def get_seeds($/;"	f
+get_seeds	build/scripts-3.8/densitysplit	/^from densitysplit.pipeline import get_seeds, get_density_pdf, get_quantiles$/;"	i
+get_seeds	densitysplit/pipeline.py	/^def get_seeds($/;"	f
+hyp2f1	build/lib/densitysplit/cosmology.py	/^from scipy.special import hyp2f1, legendre, eval_legendre$/;"	i
+hyp2f1	densitysplit/cosmology.py	/^from scipy.special import hyp2f1, legendre, eval_legendre$/;"	i
+idx	build/lib/densitysplit/pipeline.py	/^        idx = np.random.choice($/;"	v
+idx	densitysplit/pipeline.py	/^        idx = np.random.choice($/;"	v
+include_package_data	setup.py	/^    include_package_data=True,$/;"	v
+install_requires	setup.py	/^    install_requires=[$/;"	v
+legendre	build/lib/densitysplit/cosmology.py	/^from scipy.special import hyp2f1, legendre, eval_legendre$/;"	i
+legendre	densitysplit/cosmology.py	/^from scipy.special import hyp2f1, legendre, eval_legendre$/;"	i
+main	bin/densitysplit	/^def main():$/;"	f
+main	build/scripts-3.8/densitysplit	/^def main():$/;"	f
+make_list	bin/densitysplit	/^    def make_list(cols):$/;"	f	function:main
+make_list	build/scripts-3.8/densitysplit	/^    def make_list(cols):$/;"	f	function:main
+name	setup.py	/^    name='densitysplit',$/;"	v
+np	bin/densitysplit	/^import numpy as np$/;"	i
+np	build/lib/densitysplit/cosmology.py	/^import numpy as np$/;"	i
+np	build/lib/densitysplit/pipeline.py	/^import numpy as np$/;"	i
+np	build/lib/densitysplit/utilities.py	/^import numpy as np$/;"	i
+np	build/scripts-3.8/densitysplit	/^import numpy as np$/;"	i
+np	densitysplit/cosmology.py	/^import numpy as np$/;"	i
+np	densitysplit/pipeline.py	/^import numpy as np$/;"	i
+np	densitysplit/utilities.py	/^import numpy as np$/;"	i
+os	bin/densitysplit	/^import os$/;"	i
+os	build/scripts-3.8/densitysplit	/^import os$/;"	i
+packages	setup.py	/^    packages=find_packages(),$/;"	v
+path	build/lib/densitysplit/pipeline.py	/^from os import path, environ$/;"	i
+path	densitysplit/pipeline.py	/^from os import path, environ$/;"	i
+pathlib	setup.py	/^import pathlib$/;"	i
+quad	build/lib/densitysplit/cosmology.py	/^from scipy.integrate import quad, simps$/;"	i
+quad	densitysplit/cosmology.py	/^from scipy.integrate import quad, simps$/;"	i
+re	bin/densitysplit	/^import re$/;"	i
+re	build/scripts-3.8/densitysplit	/^import re$/;"	i
+read_array_2d	build/lib/densitysplit/utilities.py	/^def read_array_2d(filename):$/;"	f
+read_array_2d	densitysplit/utilities.py	/^def read_array_2d(filename):$/;"	f
+read_boss_fits	build/lib/densitysplit/utilities.py	/^def read_boss_fits(filename, columns=['RA', 'DEC', 'Z']):$/;"	f
+read_boss_fits	densitysplit/utilities.py	/^def read_boss_fits(filename, columns=['RA', 'DEC', 'Z']):$/;"	f
+read_unformatted	build/lib/densitysplit/utilities.py	/^def read_unformatted(filename):$/;"	f
+read_unformatted	densitysplit/utilities.py	/^def read_unformatted(filename):$/;"	f
+remove_duplicates	bin/densitysplit	/^    def remove_duplicates(cols):$/;"	f	function:main
+remove_duplicates	build/scripts-3.8/densitysplit	/^    def remove_duplicates(cols):$/;"	f	function:main
+save_as_unformatted	build/lib/densitysplit/utilities.py	/^def save_as_unformatted(data, filename):$/;"	f
+save_as_unformatted	densitysplit/utilities.py	/^def save_as_unformatted(data, filename):$/;"	f
+scripts	setup.py	/^    scripts=['bin\/densitysplit']$/;"	v
+seeds	build/lib/densitysplit/pipeline.py	/^        seeds = np.c_[x, y, z]$/;"	v
+seeds	build/lib/densitysplit/pipeline.py	/^        seeds = sampling_data[idx]$/;"	v
+seeds	densitysplit/pipeline.py	/^        seeds = np.random.rand(nseeds, 3) * box_size$/;"	v
+seeds	densitysplit/pipeline.py	/^        seeds = sampling_data[idx]$/;"	v
+setup	setup.py	/^from setuptools import setup, find_packages$/;"	i
+simps	build/lib/densitysplit/cosmology.py	/^from scipy.integrate import quad, simps$/;"	i
+simps	build/lib/densitysplit/utilities.py	/^from scipy.integrate import simps$/;"	i
+simps	densitysplit/cosmology.py	/^from scipy.integrate import quad, simps$/;"	i
+simps	densitysplit/utilities.py	/^from scipy.integrate import simps$/;"	i
+sky_to_cartesian	bin/densitysplit	/^from densitysplit.utilities import sky_to_cartesian, cartesian_to_sky$/;"	i
+sky_to_cartesian	build/lib/densitysplit/utilities.py	/^def sky_to_cartesian(data, cosmology):$/;"	f
+sky_to_cartesian	build/scripts-3.8/densitysplit	/^from densitysplit.utilities import sky_to_cartesian, cartesian_to_sky$/;"	i
+sky_to_cartesian	densitysplit/utilities.py	/^def sky_to_cartesian(data, cosmology):$/;"	f
+url	setup.py	/^    url='https:\/\/github.com\/epaillas\/density-split-rsd', $/;"	v
+version	setup.py	/^    version='0.0.1',$/;"	v
+x	build/lib/densitysplit/pipeline.py	/^        x = np.random.uniform(0, box_size, nseeds)   $/;"	v
+y	build/lib/densitysplit/pipeline.py	/^        y = np.random.uniform(0, box_size, nseeds)   $/;"	v
+yaml	bin/densitysplit	/^import yaml$/;"	i
+yaml	build/scripts-3.8/densitysplit	/^import yaml$/;"	i
+z	build/lib/densitysplit/pipeline.py	/^        z = np.random.uniform(0, box_size, nseeds) $/;"	v

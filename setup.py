@@ -20,7 +20,7 @@ setup(
     python_requires='>=3.6, <4',
     install_requires=[
         'numpy',
-        'nbodykit'
+        'pypower'
     ],
     scripts=['bin/densitysplit']
 )
