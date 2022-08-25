@@ -4,10 +4,11 @@
 
   - `pypower`
   - `numpy`
+  - `pandas`
 
 ### Installation
 
-Under the main directory, install the package with `python setup.py install`. 
+Under the main directory, install the package with `python setup.py install` . 
 
 ### Usage
 
