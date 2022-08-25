@@ -29,70 +29,91 @@ class DensitySplit:
     def get_mesh(self):
         if self.boxsize is None:
             mesh  = CatalogMesh(data_positions=self.data_positions,
-                data_weights=self.data_weights, nmesh=self.nmesh,
+                data_weights=self.data_weights, cellsize=self.cellsize,
                 resampler=self.resampler, position_type='pos',
                 randoms_positions=self.randoms_positions,
-                randoms_weights=self.randoms_weights, boxpad=1.0,
+                randoms_weights=self.randoms_weights, boxpad=self.boxpad,
                 interlacing=0)
         else:
             mesh  = CatalogMesh(data_positions=self.data_positions,
                 data_weights=self.data_weights, boxsize=self.boxsize,
-                nmesh=self.nmesh, resampler=self.resampler, position_type='pos',
-                interlacing=0)
+                cellsize=self.cellsize, resampler=self.resampler, 
+                position_type='pos', interlacing=0)
         return mesh
 
 
     def get_box_randoms(self, nrandoms, seed=42):
         np.random.seed(seed)
-        self.randoms_positions = np.random.rand(nrandoms, 3) * self.boxsize
+        randoms = np.random.rand(nrandoms, 3) * self.boxsize
+        return randoms
 
 
-    def get_density(self, smooth_radius, nmesh, compensate=True,
-        resampler='cic', sampling='randoms'):
-        self.nmesh = nmesh
+    def get_density(self, smooth_radius, cellsize, compensate=False,
+        resampler='cic', sampling='randoms', sampling_positions=None,
+        boxpad=1.5):
+        self.cellsize = cellsize
+        self.boxpad = boxpad
         self.resampler = resampler
         self.mesh = self.get_mesh()
 
         if self.boxsize is None:
+            randoms_mesh = self.mesh.to_mesh(field='data-normalized_randoms',
+                compensate=compensate)
+            mask = randoms_mesh != 0.0
+            randoms_mesh = randoms_mesh.r2c().apply(TopHat(r=smooth_radius))
+            randoms_mesh = randoms_mesh.c2r()
+
             data_mesh = self.mesh.to_mesh(field='data', compensate=compensate)
             data_mesh = data_mesh.r2c().apply(TopHat(r=smooth_radius))
             data_mesh = data_mesh.c2r()
 
-            randoms_mesh = self.mesh.to_mesh(field='data-normalized_randoms',
-                compensate=compensate)
-            is_empty = randoms_mesh == 0.0 
-            randoms_mesh = randoms_mesh.r2c().apply(TopHat(r=smooth_radius))
-            randoms_mesh = randoms_mesh.c2r()
-            
-            density_mesh = data_mesh / randoms_mesh - 1
-            density_mesh[is_empty] = np.nan
-
+            density_mesh = data_mesh - randoms_mesh
+            density_mesh[mask] /= randoms_mesh[mask]
+            density_mesh[~mask] = 0.0
         else:
             data_mesh = self.mesh.to_mesh(field='data', compensate=compensate)
             data_mesh = data_mesh.r2c().apply(TopHat(r=smooth_radius))
             data_mesh = data_mesh.c2r()
 
+            nmesh = self.mesh.nmesh[0]
             norm = sum(self.data_weights)
             density_mesh = data_mesh/(norm/(nmesh**3)) - 1
 
-        if sampling == 'randoms':
-            if not hasattr(self, 'randoms_positions'):
-                nrandoms = 5 * len(self.data_positions)
-                self.get_box_randoms(nrandoms)
-            self.density = density_mesh.readout(self.randoms_positions)
-        elif sampling == 'data':
-            self.density = density_mesh.readout(self.data_positions)
-        self.sampling = sampling
+        if self.boxsize is None:
+            databox = (self.data_positions[:, :].max() - self.data_positions[:, :].min())
+            shift = (self.mesh.boxsize) / 2 - databox / 2
+        else:
+            shift = 0
+
+        if sampling_positions is not None:
+            self.density = density_mesh.readout(sampling_positions + shift)
+            self.sampling_positions = sampling_positions
+        else:
+            if sampling == 'randoms':
+                if self.boxsize is None:
+                    self.density = density_mesh.readout(self.randoms_positions + shift,
+                        resampler=resampler)
+                    self.sampling_positions = self.randoms_positions
+                else:
+                    nrandoms = 5 * len(self.data_positions)
+                    randoms = self.get_box_randoms(nrandoms)
+                    self.density = density_mesh.readout(randoms + shift, resampler=resampler)
+                    self.sampling_positions = randoms
+            elif sampling == 'data':
+                self.density = density_mesh.readout(self.data_positions + shift,
+                    resampler=resampler)
+                self.sampling_positions = self.data_positions
+            else:
+                raise ValueError('Invalid sampling method. If sampling_positions '
+                    f'is not provided, need to set sampling to "data" or "randoms"')
+            
         return self.density
 
     def get_quantiles(self, nquantiles):
         quantiles_idx = qcut(self.density, nquantiles, labels=False)
         quantiles = []
         for i in range(nquantiles):
-            if self.sampling == 'randoms':
-                quantiles.append(self.randoms_positions[quantiles_idx == i])
-            elif self.sampling == 'data':
-                quantiles.append(self.data_positions[quantiles_idx == i])
+                quantiles.append(self.sampling_positions[quantiles_idx == i])
         # self.quantiles = np.array(quantiles, dtype=object)
         self.quantiles = quantiles
         return quantiles
