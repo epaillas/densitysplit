@@ -48,9 +48,9 @@ class DensitySplit:
         return randoms
 
 
-    def get_density(self, smooth_radius, cellsize, compensate=False,
+    def get_density(self, smooth_radius, cellsize, compensate=True,
         resampler='cic', sampling='randoms', sampling_positions=None,
-        boxpad=1.5):
+        boxpad=2.0):
         self.cellsize = cellsize
         self.boxpad = boxpad
         self.resampler = resampler
@@ -80,8 +80,7 @@ class DensitySplit:
             density_mesh = data_mesh/(norm/(nmesh**3)) - 1
 
         if self.boxsize is None:
-            databox = (self.data_positions[:, :].max() - self.data_positions[:, :].min())
-            shift = (self.mesh.boxsize) / 2 - databox / 2
+            shift = self.mesh.boxsize / 2 - self.mesh.boxcenter
         else:
             shift = 0
 
