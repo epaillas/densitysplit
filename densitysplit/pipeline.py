@@ -117,7 +117,9 @@ class DensitySplit:
         if return_density:
             density_quantiles = []
             for i in range(nquantiles):
-                density_quantiles.append(self.density[quantiles_idx == i])
+                density_quantiles.append(
+                    np.mean(self.density[quantiles_idx == i])
+                )
             density_quantiles = np.asarray(density_quantiles, dtype=float)
             return quantiles, density_quantiles
         return quantiles
