@@ -108,14 +108,20 @@ class DensitySplit:
             
         return self.density
 
-    def get_quantiles(self, nquantiles):
+    def get_quantiles(self, nquantiles, return_density=False):
         quantiles_idx = qcut(self.density, nquantiles, labels=False)
         quantiles = []
         for i in range(nquantiles):
-                quantiles.append(self.sampling_positions[quantiles_idx == i])
-        # self.quantiles = np.array(quantiles, dtype=object)
+            quantiles.append(self.sampling_positions[quantiles_idx == i])
         self.quantiles = quantiles
+        if return_density:
+            density_quantiles = []
+            for i in range(nquantiles):
+                density_quantiles.append(self.density[quantiles_idx == i])
+            density_quantiles = np.asarray(density_quantiles, dtype=float)
+            return quantiles, density_quantiles
         return quantiles
+
 
 class TopHat(object):
     # adapted from https://github.com/bccp/nbodykit/
