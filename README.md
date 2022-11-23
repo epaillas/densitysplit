@@ -1,5 +1,7 @@
 ## density-split-rsd 
 
+NOTE: This branch is deprecated. Consider using the master branch instead.
+
 A package for running the redshift-space distortions with split densities pipeline presented in https://arxiv.org/abs/2101.09854.
 
 The interface of the code is written in Python 3, while the engine that takes care of intensive calculations is written in the Julia programming language, so you must have it installed along with the packages listed below.
