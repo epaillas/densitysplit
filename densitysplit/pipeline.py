@@ -50,7 +50,7 @@ class DensitySplit:
 
     def get_density(self, smooth_radius, cellsize, compensate=True,
         resampler='cic', sampling='randoms', sampling_positions=None,
-        boxpad=2.0):
+        boxpad=2.0, filter_shape='tophat'):
         self.cellsize = cellsize
         self.boxpad = boxpad
         self.resampler = resampler
@@ -60,7 +60,12 @@ class DensitySplit:
             randoms_mesh = self.mesh.to_mesh(field='data-normalized_randoms',
                 compensate=compensate)
             mask = randoms_mesh != 0.0
-            randoms_mesh = randoms_mesh.r2c().apply(TopHat(r=smooth_radius))
+            if filter_shape == 'tophat':
+                randoms_mesh = randoms_mesh.r2c().apply(TopHat(r=smooth_radius))
+            elif filter_shape == 'gaussian':
+                randoms_mesh = randoms_mesh.r2c().apply(Gaussian(r=smooth_radius))
+            else:
+                raise ValueError('filter_shape must be "tophat" or "gaussian"')
             randoms_mesh = randoms_mesh.c2r()
 
             data_mesh = self.mesh.to_mesh(field='data', compensate=compensate)
