@@ -129,6 +129,7 @@ class TopHat(object):
     # adapted from https://github.com/bccp/nbodykit/
     def __init__(self, r):
         self.r = r
+
     def __call__(self, k, v):
         r = self.r
         k = sum(ki ** 2 for ki in k) ** 0.5
@@ -139,3 +140,11 @@ class TopHat(object):
         return w * v
 
 
+class Gaussian(object):
+    def __init__(self, r):
+        self.r = r
+
+    def __call__(self, k, v):
+        r = self.r
+        k2 = sum(ki ** 2 for ki in k)
+        return np.exp(- 0.5 * k2 * r**2) * v
