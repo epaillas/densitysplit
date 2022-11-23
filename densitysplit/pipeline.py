@@ -1,6 +1,7 @@
 import numpy as np
 from pypower import CatalogMesh
 from pandas import qcut
+from densitysplit import filters
 
 
 class DensitySplit:
@@ -56,37 +57,27 @@ class DensitySplit:
         self.resampler = resampler
         self.mesh = self.get_mesh()
 
+        data_mesh = self.mesh.to_mesh(field='data', compensate=compensate)
+        data_mesh = data_mesh.r2c().apply(
+            getattr(filters, filter_shape)(r=smooth_radius))
+        data_mesh = data_mesh.c2r()
+
         if self.boxsize is None:
             randoms_mesh = self.mesh.to_mesh(field='data-normalized_randoms',
                 compensate=compensate)
             mask = randoms_mesh != 0.0
-            if filter_shape == 'tophat':
-                randoms_mesh = randoms_mesh.r2c().apply(TopHat(r=smooth_radius))
-            elif filter_shape == 'gaussian':
-                randoms_mesh = randoms_mesh.r2c().apply(Gaussian(r=smooth_radius))
-            else:
-                raise ValueError('filter_shape must be "tophat" or "gaussian"')
+            randoms_mesh = randoms_mesh.r2c().apply(
+                getattr(filters, filter_shape)(r=smooth_radius))
             randoms_mesh = randoms_mesh.c2r()
-
-            data_mesh = self.mesh.to_mesh(field='data', compensate=compensate)
-            data_mesh = data_mesh.r2c().apply(TopHat(r=smooth_radius))
-            data_mesh = data_mesh.c2r()
 
             density_mesh = data_mesh - randoms_mesh
             density_mesh[mask] /= randoms_mesh[mask]
             density_mesh[~mask] = 0.0
+            shift = self.mesh.boxsize / 2 - self.mesh.boxcenter
         else:
-            data_mesh = self.mesh.to_mesh(field='data', compensate=compensate)
-            data_mesh = data_mesh.r2c().apply(TopHat(r=smooth_radius))
-            data_mesh = data_mesh.c2r()
-
             nmesh = self.mesh.nmesh[0]
             norm = sum(self.data_weights)
             density_mesh = data_mesh/(norm/(nmesh**3)) - 1
-
-        if self.boxsize is None:
-            shift = self.mesh.boxsize / 2 - self.mesh.boxcenter
-        else:
             shift = 0
 
         if sampling_positions is not None:
@@ -128,28 +119,3 @@ class DensitySplit:
             density_quantiles = np.asarray(density_quantiles, dtype=float)
             return quantiles, density_quantiles
         return quantiles
-
-
-class TopHat(object):
-    # adapted from https://github.com/bccp/nbodykit/
-    def __init__(self, r):
-        self.r = r
-
-    def __call__(self, k, v):
-        r = self.r
-        k = sum(ki ** 2 for ki in k) ** 0.5
-        kr = k * r
-        with np.errstate(divide='ignore', invalid='ignore'):
-            w = 3 * (np.sin(kr) / kr ** 3 - np.cos(kr) / kr ** 2)
-        w[k == 0] = 1.0
-        return w * v
-
-
-class Gaussian(object):
-    def __init__(self, r):
-        self.r = r
-
-    def __call__(self, k, v):
-        r = self.r
-        k2 = sum(ki ** 2 for ki in k)
-        return np.exp(- 0.5 * k2 * r**2) * v
