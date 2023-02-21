@@ -1,7 +1,10 @@
 API
 ===
 
-.. autosummary::
-   :toctree: generated
+Pipeline
+----------------------------------
 
-   densitysplit
+.. automodule:: densitysplit.pipeline
+  :members:
+  :inherited-members:
+  :show-inheritance:
