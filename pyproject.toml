@@ -1,8 +1,0 @@
-[build-system]
-requires = []
-build-backend = ""
-
-[project]
-name = "densitysplit"
-authors = [{name = "Enrique Paillas", email = "enrique.paillas@uwaterloo.ca"}]
-dynamic = ["version", "description"]
