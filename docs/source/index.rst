@@ -1,7 +1,7 @@
 Welcome to densitysplit's documentation!
 ===================================
 
-**densitysplit** (/lu'make/) is a Python library for the characterization
+**densitysplit** is a Python library for the characterization
 of density-dependent galaxy clustering.
 
 Check out the :doc:`usage` section for further information, including
