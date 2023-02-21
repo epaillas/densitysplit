@@ -69,7 +69,6 @@ class DensitySplit:
             randoms_mesh = randoms_mesh.r2c().apply(
                 getattr(filters, filter_shape)(r=smooth_radius))
             randoms_mesh = randoms_mesh.c2r()
-
             density_mesh = data_mesh - randoms_mesh
             density_mesh[mask] /= randoms_mesh[mask]
             density_mesh[~mask] = 0.0
