@@ -1,4 +1,4 @@
-name: densitysplit-docs
+name: pycorr-docs
 
 channels:
 - defaults
@@ -8,4 +8,3 @@ dependencies:
 - python=3.8
 - numpy
 - scipy
-- pypower
