@@ -21,7 +21,6 @@ setup(
     install_requires=[
         'numpy',
         'scipy',
-        'pmesh',
         'astropy',
         'pypower'
     ],
