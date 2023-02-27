@@ -5,44 +5,33 @@ from scipy.interpolate import InterpolatedUnivariateSpline
 
 class Cosmology:
     '''Class for cosmology calculations.
-    
+
     Parameters
     ----------
     omega_m : float, optional
-        Matter density parameter. Default is 0.308.
-        h : float, optional
-        Dimension-less Hubble constant. Default is 0.676.
-        c : float, optional
-        Speed of light in km/s. Default is 299792.458.
-        
-        Attributes
-        ----------
-        H0 : float
-            Hubble constant in units of 100 km/s/Mpc.
-            h : float
-            Dimension-less Hubble constant.
-            c : float
-            Speed of light in km/s.
-            omega_m : float
-            Matter density parameter.
-            omega_lambda : float
-            Dark energy density parameter.
-            zgrid : array_like
-            Redshift grid for interpolation.
-            rgrid : array_like
-            Comoving distance grid for interpolation.
-            
-            Methods
-            -------
-            Ez(z)
-            HubbleParameter(z)
-            ComovingDistance(z)
-            AngularDiameterDistance(z)
-            LuminosityDistance(z)
-            TransverseComovingDistance(z)
-            
-            
-            '''
+        Matter density parameter.
+    h : float, optional
+        Hubble parameter.
+    c : float, optional
+        Speed of light in km/s.
+    
+    Attributes
+    ----------
+    H0 : float
+        Hubble constant in km/s/Mpc.
+    h : float
+        Dimensionless Hubble parameter.
+    c : float
+        Speed of light in km/s.
+    omega_m : float
+        Matter density parameter.
+    omega_lambda : float
+        Dark energy density parameter.
+    zgrid : array_like
+        Redshift grid used for interpolation.
+    rgrid : array_like
+        Comoving distance grid used for interpolation.
+        '''
     def __init__(self,
                 omega_m=0.308,
                 h=0.676,

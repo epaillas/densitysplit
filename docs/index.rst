@@ -17,7 +17,7 @@ densitysplit is a scientific package to perform to perform a density-split galax
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: API Documentation:
 
    densitysplit
