@@ -22,6 +22,6 @@ setup(
         'numpy',
         'scipy',
         'astropy',
-        'pypower'
+        'pandas',
     ],
 )
