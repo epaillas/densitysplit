@@ -2,9 +2,10 @@
 
 ### Requirements
 
-  - `pypower`
   - `numpy`
+  - `scipy`
   - `pandas`
+  - `pypower`
 
 ### Installation
 
@@ -16,7 +17,7 @@ Notebooks with examples can be found under the `nb` directory. Full documentatio
 
 ## Documentation
 
-Documentation is hosted on Read the Docs, [pypower docs](https://densitysplit.readthedocs.io/).
+Documentation is hosted on https://densitysplit.readthedocs.io/ (https://densitysplit.readthedocs.io/).
 
 
 
