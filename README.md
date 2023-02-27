@@ -17,7 +17,7 @@ Notebooks with examples can be found under the `nb` directory. Full documentatio
 
 ## Documentation
 
-Documentation is hosted on https://densitysplit.readthedocs.io/ (https://densitysplit.readthedocs.io/).
+Documentation is hosted on [Read the Docs](https://densitysplit.readthedocs.io/).
 
 
 
