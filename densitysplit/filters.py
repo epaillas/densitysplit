@@ -2,7 +2,14 @@ import numpy as np
 
 
 class TopHat(object):
-    # adapted from https://github.com/bccp/nbodykit/
+    '''Top-hat filter in Fourier space
+    adapted from https://github.com/bccp/nbodykit/
+
+    Parameters
+    ----------
+    r : float
+        the radius of the top-hat filter
+    '''
     def __init__(self, r):
         self.r = r
 
@@ -17,6 +24,13 @@ class TopHat(object):
 
 
 class Gaussian(object):
+    '''Gaussian filter in Fourier space
+
+    Parameters
+    ----------
+    r : float
+        the radius of the Gaussian filter
+    '''
     def __init__(self, r):
         self.r = r
 
