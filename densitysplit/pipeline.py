@@ -2,6 +2,7 @@ import numpy as np
 from pypower import CatalogMesh
 from pandas import qcut
 from densitysplit import filters
+import sys
 
 
 class DensitySplit:
@@ -51,7 +52,7 @@ class DensitySplit:
 
     def get_density(self, smooth_radius, cellsize, compensate=True,
         resampler='cic', sampling='randoms', sampling_positions=None,
-        boxpad=2.0, filter_shape='tophat'):
+        boxpad=2.0, filter_shape='tophat', ran_min=0.01):
         self.cellsize = cellsize
         self.boxpad = boxpad
         self.resampler = resampler
@@ -63,12 +64,13 @@ class DensitySplit:
         data_mesh = data_mesh.c2r()
 
         if self.boxsize is None:
-            randoms_mesh = self.mesh.to_mesh(field='data-normalized_randoms',
+            randoms_mesh = self.mesh.to_mesh(field='randoms',
                 compensate=compensate)
-            mask = randoms_mesh != 0.0
             randoms_mesh = randoms_mesh.r2c().apply(
                 getattr(filters, filter_shape)(r=smooth_radius))
             randoms_mesh = randoms_mesh.c2r()
+            threshold = ran_min * np.mean(randoms_mesh)
+            mask = randoms_mesh > threshold
 
             density_mesh = data_mesh - randoms_mesh
             density_mesh[mask] /= randoms_mesh[mask]
