@@ -113,7 +113,7 @@ class DensitySplit:
 
     def get_density(self, smooth_radius, cellsize, compensate=True,
         resampler='cic', sampling='randoms', sampling_positions=None,
-        boxpad=2.0, filter_shape='tophat', ran_min=0.01):
+        boxpad=2.0, filter_shape='Tophat', ran_min=0.01):
         """
         Get the density field.
 
