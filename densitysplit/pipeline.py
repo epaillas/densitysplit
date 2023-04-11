@@ -155,7 +155,7 @@ class DensitySplit:
         data_mesh = data_mesh.c2r()
 
         if self.boxsize is None:
-            randoms_mesh = self.mesh.to_mesh(field='randoms',
+            randoms_mesh = self.mesh.to_mesh(field='data-normalized_randoms',
                 compensate=compensate)
             randoms_mesh = randoms_mesh.r2c().apply(
                 getattr(filters, filter_shape)(r=smooth_radius))
