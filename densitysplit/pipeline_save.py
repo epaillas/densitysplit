@@ -157,14 +157,31 @@ class DensitySplit:
         if self.boxsize is None:
             randoms_mesh = self.mesh.to_mesh(field='randoms',
                 compensate=compensate)
+            if check:
+                mask_nonzero = randoms_mesh.value > 0
+                nnonzero = mask_nonzero.sum()
+                nmesh = self.mesh.nmesh[0]
+                if nnonzero < 2: raise ValueError('Very few randoms!')
             randoms_mesh = randoms_mesh.r2c().apply(
                 getattr(filters, filter_shape)(r=smooth_radius))
             randoms_mesh = randoms_mesh.c2r()
             sum_data, sum_randoms = np.sum(data_mesh.value), np.sum(randoms_mesh.value)
             alpha = sum_data / sum_randoms
             density_mesh = data_mesh - alpha * randoms_mesh
-            mask = randoms_mesh > 0
-            density_mesh[mask] /= alpha * randoms_mesh[mask]
+            threshold = ran_min * sum_randoms / len(self.randoms_positions)
+            if check:
+                mean_nran_per_cell = randoms_mesh.value[mask_nonzero].mean()
+                std_nran_per_cell = randoms_mesh.value[mask_nonzero].std(ddof=1)
+                print(f'Mean smoothed random density in non-empty cells is {mean_nran_per_cell:.4f} (std = {std_nran_per_cell:.4f}), threshold is (ran_min * mean weight) = {threshold:.4f}.')
+            mask = randoms_mesh > threshold
+            if check:
+                frac_nonzero_masked = 1 - mask.sum() / nnonzero
+                del mask_nonzero
+                if frac_nonzero_masked > 0.1:
+                    print(f'Masking a large fraction {frac_nonzero_masked:.4f} of non-empty cells. You should probably increase the number of randoms.')
+                else:
+                    print(f'Masking a fraction {frac_nonzero_masked:.4f} of non-empty cells.')
+            density_mesh[mask] /= randoms_mesh[mask]
             density_mesh[~mask] = 0.0
             shift = self.mesh.boxsize / 2 - self.mesh.boxcenter
         else:
@@ -250,6 +267,7 @@ class DensitySplit:
         self.density[mask] /= D1R2[mask]
         self.density[~mask] = 0
         masked_fraction = 1 - np.sum(mask) / len(mask)
+        print('Masking {:.2f}% of the sampling positions'.format(100*masked_fraction))
         self.sampling_positions = sampling_positions
         return self.density
 
