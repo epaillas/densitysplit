@@ -239,11 +239,11 @@ class DensitySplit:
             Main.weights1 = np.ones(len(sampling_positions)) 
             Main.positions2 = self.data_positions.T
             Main.weights2 = self.data_weights
-            Main.box_size = self.box_size
+            Main.boxsize = self.boxsize
             Main.smooth_radius = smooth_radius
-            D1D2 = jl.eval(f"count_pairs_box_{filter_shape.lower()}(positions1, positions2, weights1, weights2, box_size, smooth_radius)")
+            D1D2 = jl.eval(f"count_pairs_box_{filter_shape.lower()}(positions1, positions2, weights1, weights2, boxsize, smooth_radius)")
             bin_volume = 4/3 * np.pi * smooth_radius ** 3
-            mean_density = np.sum(self.data_weights) / (self.box_size ** 3)
+            mean_density = np.sum(self.data_weights) / (self.boxsize ** 3)
             D1R2 = bin_volume * mean_density * np.ones(len(sampling_positions))
         self.density = D1D2 - D1R2
         mask = D1R2 > 0
@@ -253,7 +253,7 @@ class DensitySplit:
         self.sampling_positions = sampling_positions
         return self.density
 
-    def get_quantiles(self, nquantiles, return_density=False):
+    def get_quantiles(self, nquantiles, return_idx=False):
         """
         Get the quantiles of the density field.
 
@@ -261,27 +261,21 @@ class DensitySplit:
         ----------
         nquantiles : int
             Number of quantiles.
-        return_density : bool, optional
-            Return the density field at the quantiles.
+        return_idx : bool, optional
+            Whether to return index of the quantile of each query point.
 
         Returns
         -------
         quantiles : array_like
             Quantiles of the density field.
-        density_quantiles : array_like
-            Density field at the quantiles.
+        quantiles_idx : array_like, optional
+            Index of the quantile of each query point.
         """
         quantiles_idx = qcut(self.density, nquantiles, labels=False)
         quantiles = []
         for i in range(nquantiles):
             quantiles.append(self.sampling_positions[quantiles_idx == i])
         self.quantiles = quantiles
-        if return_density:
-            density_quantiles = []
-            for i in range(nquantiles):
-                density_quantiles.append(
-                    np.mean(self.density[quantiles_idx == i])
-                )
-            density_quantiles = np.asarray(density_quantiles, dtype=float)
-            return quantiles, density_quantiles
+        if return_idx:
+            return quantiles, quantiles_idx
         return quantiles
