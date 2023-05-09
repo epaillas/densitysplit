@@ -46,16 +46,20 @@ class DensitySplit:
     sampling_positions : array_like
         Positions where the density field was sampled.
     """
-    def __init__(self, data_positions, boxsize=None,
-        data_weights=None, randoms_positions=None,
-        randoms_weights=None):
+    def __init__(self, data_positions, boxsize=None, data_weights=None,
+        randoms_positions=None, randoms_weights=None, mpicomm=None, mpiroot=None):
+        self.mpicomm = mpicomm
+        self.mpiroot = mpiroot
         self.data_positions = data_positions
         self.boxsize = boxsize
 
         if data_weights is not None:
             self.data_weights = data_weights
         else:
-            self.data_weights = np.ones(len(data_positions))
+            if self.mpicomm.rank == self.mpiroot:
+                self.data_weights = np.ones(len(data_positions))
+            else:
+                self.data_weights = None
 
         if boxsize is None:
             if randoms_positions is None:
@@ -82,12 +86,13 @@ class DensitySplit:
                 resampler=self.resampler, position_type='pos',
                 randoms_positions=self.randoms_positions,
                 randoms_weights=self.randoms_weights, boxpad=self.boxpad,
-                interlacing=2)
+                interlacing=2,)
         else:
             mesh  = CatalogMesh(data_positions=self.data_positions,
                 data_weights=self.data_weights, boxsize=self.boxsize,
                 cellsize=self.cellsize, resampler=self.resampler, 
-                position_type='pos', interlacing=2)
+                position_type='pos', interlacing=2, mpiroot=self.mpiroot,
+                mpicomm=self.mpicomm,)
         return mesh
 
 
@@ -112,9 +117,9 @@ class DensitySplit:
         return randoms
 
 
-    def get_density_mesh(self, smooth_radius, cellsize, compensate=True,
-        resampler='cic', sampling='randoms', sampling_positions=None,
-        boxpad=2.0, filter_shape='Tophat', ran_min=0.01):
+    def get_density_mesh(self, sampling_positions, smooth_radius, cellsize,
+        compensate=True, resampler='cic', boxpad=2.0, filter_shape='Tophat',
+        ran_min=0.01,):
         """
         Get the overdensity field.
 
@@ -168,31 +173,14 @@ class DensitySplit:
             density_mesh[~mask] = 0.0
             shift = self.mesh.boxsize / 2 - self.mesh.boxcenter
         else:
-            nmesh = self.mesh.nmesh[0]
-            norm = sum(self.data_weights)
-            density_mesh = data_mesh/(norm/(nmesh**3)) - 1
+            nmesh = self.mesh.nmesh
+            norm = self.mpicomm.allreduce(np.sum(data_mesh.value)) / (nmesh[0]*nmesh[1]*nmesh[2])
+            density_mesh = data_mesh/norm - 1
             shift = 0
-        if sampling_positions is not None:
-            self.density = density_mesh.readout(sampling_positions + shift)
-            self.sampling_positions = sampling_positions
-        else:
-            if sampling == 'randoms':
-                if self.boxsize is None:
-                    self.density = density_mesh.readout(self.randoms_positions + shift,
-                        resampler=resampler)
-                    self.sampling_positions = self.randoms_positions
-                else:
-                    nrandoms = 5 * len(self.data_positions)
-                    randoms = self.get_box_randoms(nrandoms)
-                    self.density = density_mesh.readout(randoms + shift, resampler=resampler)
-                    self.sampling_positions = randoms
-            elif sampling == 'data':
-                self.density = density_mesh.readout(self.data_positions + shift,
-                    resampler=resampler)
-                self.sampling_positions = self.data_positions
-            else:
-                raise ValueError('Invalid sampling method. If sampling_positions '
-                    f'is not provided, need to set sampling to "data" or "randoms"')
+            layout = density_mesh.pm.decompose(sampling_positions, smoothing='cic')
+            sampling_positions = layout.exchange(sampling_positions)
+            density = density_mesh.readout(sampling_positions + shift, resampler='cic')
+            self.density = layout.gather(density, mode='sum', out=None)
         return self.density
 
     def get_density_paircount(self, smooth_radius, sampling_positions, filter_shape='Tophat', nthreads=1):
@@ -243,7 +231,7 @@ class DensitySplit:
             Main.smooth_radius = smooth_radius
             D1D2 = jl.eval(f"count_pairs_box_{filter_shape.lower()}(positions1, positions2, weights1, weights2, boxsize, smooth_radius)")
             bin_volume = 4/3 * np.pi * smooth_radius ** 3
-            mean_density = np.sum(self.data_weights) / (self.boxsize ** 3)
+            mean_density = np.sum(self.data_weights) / (self.boxsize[0]*self.boxsize[1]*self.boxsize[2])
             D1R2 = bin_volume * mean_density * np.ones(len(sampling_positions))
         self.density = D1D2 - D1R2
         mask = D1R2 > 0
