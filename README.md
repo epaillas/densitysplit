@@ -5,7 +5,7 @@
   - `numpy`
   - `scipy`
   - `pandas`
-  - `pypower`
+  - `pyrecon`
 
 ### Installation
 

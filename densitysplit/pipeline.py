@@ -1,8 +1,6 @@
 import numpy as np
-from pypower import CatalogMesh
+from pyrecon import RealMesh
 from pandas import qcut
-from densitysplit import filters
-import matplotlib.pyplot as plt
 import sys
 
 
@@ -46,11 +44,15 @@ class DensitySplit:
     sampling_positions : array_like
         Positions where the density field was sampled.
     """
-    def __init__(self, data_positions, boxsize=None,
-        data_weights=None, randoms_positions=None,
-        randoms_weights=None):
+    def __init__(self, data_positions, boxsize=None, boxcenter=None,
+        data_weights=None, randoms_positions=None, randoms_weights=None,
+        cellsize=None, wrap=False, nthreads=None):
         self.data_positions = data_positions
         self.boxsize = boxsize
+        self.boxcenter = boxcenter
+        self.cellsize = cellsize
+        self.wrap = wrap
+        self.nthreads = nthreads
 
         if data_weights is not None:
             self.data_weights = data_weights
@@ -67,54 +69,8 @@ class DensitySplit:
                 self.randoms_weights = randoms_weights
             self.randoms_positions = randoms_positions
 
-    def get_mesh(self):
-        """
-        Get the CatalogMesh object.
 
-        Returns
-        -------
-        mesh : CatalogMesh
-            CatalogMesh object.
-        """
-        if self.boxsize is None:
-            mesh  = CatalogMesh(data_positions=self.data_positions,
-                data_weights=self.data_weights, cellsize=self.cellsize,
-                resampler=self.resampler, position_type='pos',
-                randoms_positions=self.randoms_positions,
-                randoms_weights=self.randoms_weights, boxpad=self.boxpad,
-                interlacing=2)
-        else:
-            mesh  = CatalogMesh(data_positions=self.data_positions,
-                data_weights=self.data_weights, boxsize=self.boxsize,
-                cellsize=self.cellsize, resampler=self.resampler, 
-                position_type='pos', interlacing=2)
-        return mesh
-
-
-    def get_box_randoms(self, nrandoms, seed=42):
-        """
-        Get random points inside the box.
-        
-        Parameters
-        ----------
-        nrandoms : int
-            Number of random points to generate.
-        seed : int, optional
-            Random seed.
-
-        Returns
-        -------
-        randoms : array_like
-            Random points inside the box.
-        """
-        np.random.seed(seed)
-        randoms = np.random.rand(nrandoms, 3) * self.boxsize
-        return randoms
-
-
-    def get_density_mesh(self, smooth_radius, cellsize, compensate=True,
-        resampler='cic', sampling='randoms', sampling_positions=None,
-        boxpad=2.0, filter_shape='Tophat', ran_min=0.01):
+    def get_density_mesh(self, sampling_positions, smoothing_radius):
         """
         Get the overdensity field.
 
@@ -122,78 +78,37 @@ class DensitySplit:
         ----------
         smooth_radius : float
             Radius of the smoothing filter.
-        cellsize : float
-            Size of the cells in the mesh.
-        compensate : bool, optional
-            Compensate for the shot noise.
-        resampler : str, optional
-            Resampling method.
-        sampling : str, optional
-            Sampling method.
-        sampling_positions : array_like, optional
-            Positions where the density field should be sampled. If not 
-            provided, the randoms are used.
-        boxpad : float, optional
-            Padding of the box.
-        filter_shape : str, optional
-            Shape of the smoothing filter.
-
+        sampling_positions : array_like
+            Positions where the density field should be sampled.
         Returns
         -------
         density : array_like
             Density field at the sampling positions.
-        sampling_positions : array_like
-            Positions where the density field was sampled.
         """
-        self.cellsize = cellsize
-        self.boxpad = boxpad
-        self.resampler = resampler
-        self.mesh = self.get_mesh()
-
-        data_mesh = self.mesh.to_mesh(field='data', compensate=compensate)
-        data_mesh = data_mesh.r2c().apply(
-            getattr(filters, filter_shape)(r=smooth_radius))
-        data_mesh = data_mesh.c2r()
+        self.data_mesh = RealMesh(boxsize=self.boxsize, cellsize=self.cellsize,
+                                  boxcenter=self.boxcenter, nthreads=self.nthreads)
+        self.data_mesh.assign_cic(self.data_positions, wrap=self.wrap)
+        self.data_mesh.smooth_gaussian(smoothing_radius, engine='fftw', save_wisdom=True)
         if self.boxsize is None:
-            randoms_mesh = self.mesh.to_mesh(field='data-normalized_randoms',
-                compensate=compensate)
-            randoms_mesh = randoms_mesh.r2c().apply(
-                getattr(filters, filter_shape)(r=smooth_radius))
-            randoms_mesh = randoms_mesh.c2r()
-            sum_data, sum_randoms = np.sum(data_mesh.value), np.sum(randoms_mesh.value)
-            alpha = sum_data / sum_randoms
-            density_mesh = data_mesh - alpha * randoms_mesh
-            mask = randoms_mesh > 0
-            density_mesh[mask] /= alpha * randoms_mesh[mask]
-            density_mesh[~mask] = 0.0
-            shift = self.mesh.boxsize / 2 - self.mesh.boxcenter
+            self.randoms_mesh = RealMesh(boxsize=self.boxsize, cellsize=self.cellsize,
+                                         boxcenter=self.boxcenter, nthreads=self.nthreads)
+            self.randoms_mesh.assign_cic(self.randoms_positions, wrap=self.wrap)
+            self.randoms_mesh.smooth_gaussian(smoothing_radius, engine='fftw',)
+            sum_data, sum_randoms = np.sum(self.data_mesh.value), np.sum(self.randoms_mesh.value)
+            alpha = sum_data * 1. / sum_randoms
+            self.delta_mesh = self.data_mesh - alpha * self.randoms_mesh
+            mask = self.randoms_mesh > 0
+            self.delta_mesh[mask] /= alpha * self.randoms_mesh[mask]
+            self.delta_mesh[~mask] = 0.0
+            del self.data_mesh
+            del self.randoms_mesh
         else:
-            nmesh = self.mesh.nmesh[0]
-            norm = sum(self.data_weights)
-            density_mesh = data_mesh/(norm/(nmesh**3)) - 1
-            shift = 0
-        if sampling_positions is not None:
-            self.density = density_mesh.readout(sampling_positions + shift)
-            self.sampling_positions = sampling_positions
-        else:
-            if sampling == 'randoms':
-                if self.boxsize is None:
-                    self.density = density_mesh.readout(self.randoms_positions + shift,
-                        resampler=resampler)
-                    self.sampling_positions = self.randoms_positions
-                else:
-                    nrandoms = 5 * len(self.data_positions)
-                    randoms = self.get_box_randoms(nrandoms)
-                    self.density = density_mesh.readout(randoms + shift, resampler=resampler)
-                    self.sampling_positions = randoms
-            elif sampling == 'data':
-                self.density = density_mesh.readout(self.data_positions + shift,
-                    resampler=resampler)
-                self.sampling_positions = self.data_positions
-            else:
-                raise ValueError('Invalid sampling method. If sampling_positions '
-                    f'is not provided, need to set sampling to "data" or "randoms"')
-        return self.density
+            self.delta_mesh = self.data_mesh / np.mean(self.data_mesh) - 1.
+            del self.data_mesh
+        self.delta = self.delta_mesh.read_cic(sampling_positions) 
+        self.sampling_positions = sampling_positions
+        return self.delta
+
 
     def get_density_paircount(self, smooth_radius, sampling_positions, filter_shape='Tophat', nthreads=1):
         """
@@ -243,15 +158,16 @@ class DensitySplit:
             Main.smooth_radius = smooth_radius
             D1D2 = jl.eval(f"count_pairs_box_{filter_shape.lower()}(positions1, positions2, weights1, weights2, boxsize, smooth_radius)")
             bin_volume = 4/3 * np.pi * smooth_radius ** 3
-            mean_density = np.sum(self.data_weights) / (self.boxsize ** 3)
+            mean_density = np.sum(self.data_weights) / (self.boxsize[0]*self.boxsize[1]*self.boxsize[2])
             D1R2 = bin_volume * mean_density * np.ones(len(sampling_positions))
-        self.density = D1D2 - D1R2
+        self.delta = D1D2 - D1R2
         mask = D1R2 > 0
-        self.density[mask] /= D1R2[mask]
-        self.density[~mask] = 0
+        self.delta[mask] /= D1R2[mask]
+        self.delta[~mask] = 0
         masked_fraction = 1 - np.sum(mask) / len(mask)
         self.sampling_positions = sampling_positions
-        return self.density
+        return self.delta
+
 
     def get_quantiles(self, nquantiles, return_idx=False):
         """
@@ -271,7 +187,7 @@ class DensitySplit:
         quantiles_idx : array_like, optional
             Index of the quantile of each query point.
         """
-        quantiles_idx = qcut(self.density, nquantiles, labels=False)
+        quantiles_idx = qcut(self.delta, nquantiles, labels=False)
         quantiles = []
         for i in range(nquantiles):
             quantiles.append(self.sampling_positions[quantiles_idx == i])
