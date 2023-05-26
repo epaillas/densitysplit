@@ -46,11 +46,13 @@ class DensitySplit:
     """
     def __init__(self, data_positions, boxsize=None, boxcenter=None,
         data_weights=None, randoms_positions=None, randoms_weights=None,
-        cellsize=None, wrap=False, nthreads=None):
+        cellsize=None, wrap=False, boxpad=1.5, nthreads=None):
         self.data_positions = data_positions
+        self.randoms_positions = randoms_positions
         self.boxsize = boxsize
         self.boxcenter = boxcenter
         self.cellsize = cellsize
+        self.boxpad = boxpad
         self.wrap = wrap
         self.nthreads = nthreads
 
@@ -67,10 +69,10 @@ class DensitySplit:
                 self.randoms_weights = np.ones(len(randoms_positions))
             else:
                 self.randoms_weights = randoms_weights
-            self.randoms_positions = randoms_positions
 
 
-    def get_density_mesh(self, sampling_positions, smoothing_radius):
+    def get_density_mesh(self, sampling_positions, smoothing_radius,
+        check=False, ran_min=0.01):
         """
         Get the overdensity field.
 
@@ -86,18 +88,25 @@ class DensitySplit:
             Density field at the sampling positions.
         """
         self.data_mesh = RealMesh(boxsize=self.boxsize, cellsize=self.cellsize,
-                                  boxcenter=self.boxcenter, nthreads=self.nthreads)
+                                  boxcenter=self.boxcenter, nthreads=self.nthreads,
+                                  positions=self.randoms_positions, boxpad=self.boxpad)
         self.data_mesh.assign_cic(self.data_positions, wrap=self.wrap)
-        self.data_mesh.smooth_gaussian(smoothing_radius, engine='fftw', save_wisdom=True)
+        self.data_mesh.smooth_gaussian(smoothing_radius, engine='fftw', save_wisdom=True,)
         if self.boxsize is None:
             self.randoms_mesh = RealMesh(boxsize=self.boxsize, cellsize=self.cellsize,
-                                         boxcenter=self.boxcenter, nthreads=self.nthreads)
+                                         boxcenter=self.boxcenter, nthreads=self.nthreads,
+                                         positions=self.randoms_positions, boxpad=self.boxpad)
             self.randoms_mesh.assign_cic(self.randoms_positions, wrap=self.wrap)
-            self.randoms_mesh.smooth_gaussian(smoothing_radius, engine='fftw',)
+            if check:
+                mask_nonzero = self.randoms_mesh.value > 0.
+                nnonzero = mask_nonzero.sum()
+                if nnonzero < 2: raise ValueError('Very few randoms.')
+            self.randoms_mesh.smooth_gaussian(smoothing_radius, engine='fftw', save_wisdom=True)
             sum_data, sum_randoms = np.sum(self.data_mesh.value), np.sum(self.randoms_mesh.value)
             alpha = sum_data * 1. / sum_randoms
             self.delta_mesh = self.data_mesh - alpha * self.randoms_mesh
-            mask = self.randoms_mesh > 0
+            threshold = ran_min * sum_randoms / len(self.randoms_positions)
+            mask = self.randoms_mesh > threshold
             self.delta_mesh[mask] /= alpha * self.randoms_mesh[mask]
             self.delta_mesh[~mask] = 0.0
             del self.data_mesh
