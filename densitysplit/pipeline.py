@@ -90,13 +90,15 @@ class DensitySplit:
         self.data_mesh = RealMesh(boxsize=self.boxsize, cellsize=self.cellsize,
                                   boxcenter=self.boxcenter, nthreads=self.nthreads,
                                   positions=self.randoms_positions, boxpad=self.boxpad)
-        self.data_mesh.assign_cic(self.data_positions, wrap=self.wrap)
+        self.data_mesh.assign_cic(positions=self.data_positions, wrap=self.wrap,
+                                  weights=self.data_weights)
         self.data_mesh.smooth_gaussian(smoothing_radius, engine='fftw', save_wisdom=True,)
         if self.boxsize is None:
             self.randoms_mesh = RealMesh(boxsize=self.boxsize, cellsize=self.cellsize,
                                          boxcenter=self.boxcenter, nthreads=self.nthreads,
                                          positions=self.randoms_positions, boxpad=self.boxpad)
-            self.randoms_mesh.assign_cic(self.randoms_positions, wrap=self.wrap)
+            self.randoms_mesh.assign_cic(positions=self.randoms_positions, wrap=self.wrap,
+                                         weights=self.randoms_weights)
             if check:
                 mask_nonzero = self.randoms_mesh.value > 0.
                 nnonzero = mask_nonzero.sum()
