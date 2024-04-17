@@ -82,12 +82,12 @@ class DensitySplit:
                 resampler=self.resampler, position_type='pos',
                 randoms_positions=self.randoms_positions,
                 randoms_weights=self.randoms_weights, boxpad=self.boxpad,
-                interlacing=2)
+                interlacing=0)
         else:
             mesh  = CatalogMesh(data_positions=self.data_positions,
                 data_weights=self.data_weights, boxsize=self.boxsize,
                 cellsize=self.cellsize, resampler=self.resampler, 
-                position_type='pos', interlacing=2)
+                position_type='pos', interlacing=0)
         return mesh
 
 
@@ -112,7 +112,7 @@ class DensitySplit:
         return randoms
 
 
-    def get_density_mesh(self, smooth_radius, cellsize, compensate=True,
+    def get_density_mesh(self, smooth_radius, cellsize, compensate=False,
         resampler='cic', sampling='randoms', sampling_positions=None,
         boxpad=2.0, filter_shape='Tophat', ran_min=0.01):
         """
