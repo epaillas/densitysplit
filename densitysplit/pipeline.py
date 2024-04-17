@@ -82,12 +82,12 @@ class DensitySplit:
                 resampler=self.resampler, position_type='pos',
                 randoms_positions=self.randoms_positions,
                 randoms_weights=self.randoms_weights, boxpad=self.boxpad,
-                interlacing=0)
+                interlacing=self.interlacing)
         else:
             mesh  = CatalogMesh(data_positions=self.data_positions,
                 data_weights=self.data_weights, boxsize=self.boxsize,
                 cellsize=self.cellsize, resampler=self.resampler, 
-                position_type='pos', interlacing=0)
+                position_type='pos', interlacing=self.interlacing)
         return mesh
 
 
@@ -113,7 +113,7 @@ class DensitySplit:
 
 
     def get_density_mesh(self, smooth_radius, cellsize, compensate=False,
-        resampler='cic', sampling='randoms', sampling_positions=None,
+        resampler='cic', interlacing=0, sampling='randoms', sampling_positions=None,
         boxpad=2.0, filter_shape='Tophat', ran_min=0.01):
         """
         Get the overdensity field.
@@ -128,6 +128,8 @@ class DensitySplit:
             Compensate for the shot noise.
         resampler : str, optional
             Resampling method.
+        interlacing : int, optional
+            Interlacing order.
         sampling : str, optional
             Sampling method.
         sampling_positions : array_like, optional
@@ -148,6 +150,7 @@ class DensitySplit:
         self.cellsize = cellsize
         self.boxpad = boxpad
         self.resampler = resampler
+        self.interlacing = interlacing
         self.mesh = self.get_mesh()
 
         data_mesh = self.mesh.to_mesh(field='data', compensate=compensate)
