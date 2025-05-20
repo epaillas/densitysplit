@@ -16,6 +16,7 @@ setup(
     author='Enrique Paillas',
         author_email='enrique.paillas@uwaterloo.ca',
     packages=find_packages(),
+    package_data={'': ['*.jl']},
     include_package_data=True,
     python_requires='>=3.6, <4',
     install_requires=[
