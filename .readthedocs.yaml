@@ -15,3 +15,5 @@ conda:
 
 build:
   os: ubuntu-22.04
+  tools:
+    python: "miniconda-latest"
