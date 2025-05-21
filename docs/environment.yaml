@@ -10,3 +10,4 @@ dependencies:
 - scipy
 - pandas
 - astropy
+- sphinx_rtd_theme
