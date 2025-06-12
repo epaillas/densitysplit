@@ -114,7 +114,7 @@ class DensitySplit:
 
     def get_density_mesh(self, smooth_radius, cellsize, compensate=False,
         resampler='cic', interlacing=0, sampling='randoms', sampling_positions=None,
-        boxpad=2.0, filter_shape='Tophat', ran_min=0.01):
+        boxpad=2.0, filter_shape='TopHat', ran_min=0.01):
         """
         Get the overdensity field.
 

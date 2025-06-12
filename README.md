@@ -11,11 +11,11 @@
 
 Under the main directory, install the package with:
 ```
-python setup.py install --user
+python3 -m pip install --user .
 ```
 You can also install it in developer mode, so that any changes you make to the code take place immediately:
 ```
-python setup.py develop --user
+python3 -m pip install --user -e .
 ```
 
 ### Documentation

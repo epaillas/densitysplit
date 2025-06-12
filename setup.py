@@ -11,11 +11,12 @@ import pathlib
 setup(
     name='densitysplit',
     version='0.0.1',
-    description='icharacterization of density-dependent galaxy clustering',
+    description='characterization of density-dependent galaxy clustering',
     url='https://github.com/epaillas/densitysplit', 
     author='Enrique Paillas',
         author_email='enrique.paillas@uwaterloo.ca',
     packages=find_packages(),
+    package_data={'': ['*.jl']},
     include_package_data=True,
     python_requires='>=3.6, <4',
     install_requires=[

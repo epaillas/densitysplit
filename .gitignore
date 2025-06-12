@@ -1,0 +1,21 @@
+# Python package build files
+build
+dist
+*.egg-info
+
+# IPython/Jupyter notebook checkpoints
+.ipynb_checkpoints
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Sphinx documentation build files
+docs/_build/
+
+# Mac auxillary files
+.DS_Store
